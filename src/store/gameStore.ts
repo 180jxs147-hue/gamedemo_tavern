@@ -4,6 +4,7 @@ import { GameResources, TimePhase, MaleGuest, FemaleGuest, Guest, SettlementRepo
 import { generateDailyQueue } from '../utils/generators';
 
 interface GameState {
+  gameState: 'menu' | 'playing';
   day: number;
   timePhase: TimePhase;
   resources: GameResources;
@@ -30,6 +31,8 @@ interface GameState {
   capture: (id: string, method: 'alchemy' | 'force' | 'seduce') => 'success' | 'failure' | 'no_ap';
   trainAsset: (assetId: string) => boolean;
   assignService: (maleId: string, assetId: string) => void;
+  startGame: () => void;
+  continueGame: () => void;
   resetGame: () => void;
   
   // 交互选择状态
@@ -69,25 +72,26 @@ const MAX_GUESTS = 3; // 初始大堂吧台容量
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
+      gameState: 'menu',
       day: 1,
       timePhase: 'Morning',
       resources: { ...INITIAL_RESOURCES },
       logs: [{ id: 'init', timestamp: new Date().toLocaleTimeString(), message: '游戏开始。', type: 'info' }],
       inventory: [],
       upgrades: [
-        { id: 'u1', name: '扩建吧台', desc: '增加每日接待客人的数量上限。', cost: 150, level: 0, maxLevel: 3 },
-        { id: 'u2', name: '奢华装潢', desc: '提升酒馆声望，吸引更富裕的客人。', cost: 300, level: 0, maxLevel: 5 },
+        { id: 'u1', name: '扩建吧台', desc: '增加每日早晨排队客人的数量上限。', cost: 150, level: 0, maxLevel: 3 },
+        { id: 'u2', name: '奢华装潢', desc: '提升酒馆声望，吸引更富裕和高稀有度的客人。', cost: 300, level: 0, maxLevel: 5 },
         { id: 'u3', name: '地下隔音', desc: '降低深夜行动被发现的警戒度惩罚。', cost: 500, level: 0, maxLevel: 3 },
       ],
       researches: [
-        { id: 'r1', name: '神经毒素', desc: '使目标虚弱，大幅降低诱捕难度。', cost: 200, isUnlocked: false },
-        { id: 'r2', name: '媚药改良', desc: '提升资产的魅力，增加服务费收入。', cost: 250, isUnlocked: false },
-        { id: 'r3', name: '强效吐真剂', desc: '在盘问时更容易获取隐藏情报。', cost: 150, isUnlocked: false },
+        { id: 'r1', name: '神经毒素', desc: '使目标虚弱，大幅降低所有诱捕判定的难度(DC-3)。', cost: 300, isUnlocked: false },
+        { id: 'r2', name: '高级媚药', desc: '大幅提升资产的初始魅力，增加服务费收入。', cost: 450, isUnlocked: false },
+        { id: 'r3', name: '强效吐真剂', desc: '在盘问时更容易获取隐藏情报，并且客人会停留更久。', cost: 250, isUnlocked: false },
       ],
       shopItems: [
-        { id: 's1', name: '特制镣铐', desc: '用于控制资产的道具，增加服从度。', cost: 50, icon: '/assets/icons/status/alert.png' },
-        { id: 's2', name: '安神香', desc: '降低酒馆的整体警戒度。', cost: 80, icon: '/assets/icons/status/reputation.png' },
-        { id: 's3', name: '迷幻药剂', desc: '一次性消耗品，强制捕获成功率+20%。', cost: 120, icon: '/assets/icons/professions/alchemist.png' },
+        { id: 's1', name: '特制镣铐', desc: '用于控制资产的道具，增加大量服从度。', cost: 80, icon: '/assets/icons/status/alert.png' },
+        { id: 's2', name: '安神香', desc: '一次性消耗品，降低酒馆整体警戒度20点。', cost: 120, icon: '/assets/icons/status/reputation.png' },
+        { id: 's3', name: '迷幻药剂', desc: '一次性消耗品，强制捕获成功率极大幅度提升。', cost: 200, icon: '/assets/icons/professions/alchemist.png' },
       ],
       queue: generateDailyQueue(10, MAX_GUESTS),
       guests: [],
@@ -323,7 +327,7 @@ if (timePhase === 'LateNight') {
               status: 'Captured', 
               obedience: Math.floor(Math.random() * 20), 
               charm: Math.floor(Math.random() * 20) + 10,
-              skill: 0
+              skills: { mouth: 0, breast: 0, vagina: 0, anal: 0 }
             }]
           });
           return 'success';
@@ -341,8 +345,15 @@ if (timePhase === 'LateNight') {
       },
 
       trainAsset: (assetId) => {
-        const { resources, assets } = get();
+        const { resources, assets, addLog } = get();
         if (resources.ap < 1) return false;
+
+        const asset = assets.find(a => a.id === assetId);
+        if (!asset) return false;
+
+        const skills = asset.skills;
+        const keys = ['mouth', 'breast', 'vagina', 'anal'] as const;
+        const randomSkill = keys[Math.floor(Math.random() * keys.length)];
 
         set({
           resources: { ...resources, ap: resources.ap - 1 },
@@ -350,21 +361,55 @@ if (timePhase === 'LateNight') {
             ...a,
             obedience: Math.min(100, a.obedience + 10),
             charm: Math.min(100, a.charm + 5),
-            skill: Math.min(100, a.skill + 5)
+            skills: {
+              ...a.skills,
+              [randomSkill]: Math.min(100, a.skills[randomSkill] + Math.floor(Math.random() * 10) + 5)
+            }
           } : a)
         });
+        addLog(`【资产调教】消耗 1 AP 调教了 [${asset.name}]。服从度提升，魅力提升，${randomSkill} 技巧提升！`, 'success');
         return true;
       },
 
+      startGame: () => {
+        set({
+          gameState: 'playing',
+          day: 1,
+          timePhase: 'Morning',
+          resources: { ...INITIAL_RESOURCES },
+          logs: [{ id: 'init', timestamp: new Date().toLocaleTimeString(), message: '新的经营开始了。', type: 'info' }],
+          inventory: [],
+          queue: generateDailyQueue(10, MAX_GUESTS),
+          guests: [],
+          assets: [],
+          latestReport: null,
+          selectedEntity: null
+        });
+      },
+
+      continueGame: () => set({ gameState: 'playing' }),
+
       assignService: (maleId, assetId) => {
         const { guests } = get();
+        // 保证每个女客只能同时服务一名男客，如果之前已分配给别人，则从别人那里取消
         set({
-          guests: guests.map(g => g.id === maleId ? { ...g, assignedAssetId: assetId } : g)
+          guests: guests.map(g => {
+            if (g.gender === 'Male') {
+              const male = g as MaleGuest;
+              if (male.id === maleId) {
+                return { ...male, assignedAssetId: assetId };
+              } else if (male.assignedAssetId === assetId) {
+                return { ...male, assignedAssetId: undefined };
+              }
+            }
+            return g;
+          })
         });
       },
 
       resetGame: () => {
         set({
+          gameState: 'menu',
           day: 1,
           timePhase: 'Morning',
           resources: { ...INITIAL_RESOURCES },

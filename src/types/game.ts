@@ -83,7 +83,12 @@ export interface FemaleGuest extends BaseGuest {
   // 资产属性（被捕获后）
   obedience: number;
   charm: number;
-  skill: number;
+  skills: {
+    mouth: number;
+    breast: number;
+    vagina: number;
+    anal: number;
+  };
 }
 
 export type Guest = MaleGuest | FemaleGuest;
