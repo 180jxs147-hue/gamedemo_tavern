@@ -4,6 +4,7 @@ import { Guest, FemaleGuest, MaleGuest } from '../types/game';
 import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff, Coins, HeartPulse, Brain, FlaskConical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
+import { getRarityColor } from '../utils/ui';
 
 export const GuestDetailView: React.FC = () => {
   const { selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, capture, assignService, assets } = useGameStore();
@@ -71,11 +72,11 @@ export const GuestDetailView: React.FC = () => {
                 {guest.name}
               </h3>
               <div className="flex items-center justify-between mt-2">
-                <span className="bg-black/50 px-2 py-1 border border-[color:var(--rt-border)] rounded-sm text-xs font-bold text-[color:var(--rt-accent)]">
+                <span className={clsx("px-2 py-1 rounded-sm text-xs font-bold border border-current", getRarityColor(guest.rarity))}>
                   稀有度 {guest.rarity}
                 </span>
-                <span className="text-[color:var(--rt-muted)] text-sm font-serif">
-                  {isMale ? '客源' : '猎物'}
+                <span className="text-xs text-[color:var(--rt-muted)] bg-black/50 px-2 py-1 rounded-sm border border-zinc-700/50">
+                  {isMale ? '男性' : '女性'}
                 </span>
               </div>
             </div>

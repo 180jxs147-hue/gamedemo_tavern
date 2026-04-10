@@ -1,5 +1,5 @@
 export type TimePhase = 'Morning' | 'Day' | 'Night' | 'LateNight';
-export type GuestRarity = 'N' | 'R' | 'SR' | 'SSR';
+export type GuestRarity = '普通' | '稀有' | '史诗' | '传说';
 export type Gender = 'Male' | 'Female';
 export type WealthTier = '贫穷' | '平民' | '富裕' | '贵族';
 
@@ -88,7 +88,34 @@ export interface FemaleGuest extends BaseGuest {
 
 export type Guest = MaleGuest | FemaleGuest;
 
+
+export interface TavernUpgrade {
+  id: string;
+  name: string;
+  desc: string;
+  cost: number;
+  level: number;
+  maxLevel: number;
+}
+
+export interface ResearchItem {
+  id: string;
+  name: string;
+  desc: string;
+  cost: number; // AP or Gold
+  isUnlocked: boolean;
+}
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  desc: string;
+  cost: number;
+  icon: string;
+}
+
 export interface Facility {
+
   id: string;
   name: string;
   level: number;

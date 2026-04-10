@@ -4,6 +4,7 @@ import { Guest, FemaleGuest, MaleGuest } from '../types/game';
 import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
+import { getRarityColor } from '../utils/ui';
 
 interface GuestModalProps {
   guest: Guest;
@@ -68,7 +69,11 @@ export const GuestModal: React.FC<GuestModalProps> = ({ guest, onClose }) => {
             <div className="absolute bottom-2 left-2 text-xl font-serif font-bold text-amber-500 drop-shadow-md">
               {guest.name}
             </div>
-            <div className="absolute top-2 right-2 bg-black/60 px-2 py-0.5 border border-amber-900/50 rounded-sm text-xs font-bold text-amber-400">
+            <div className={clsx(
+              "absolute top-2 right-2 bg-black/60 px-2 py-0.5 border rounded-sm text-xs font-bold",
+              getRarityColor(guest.rarity),
+              "border-current"
+            )}>
               {guest.rarity}
             </div>
           </div>

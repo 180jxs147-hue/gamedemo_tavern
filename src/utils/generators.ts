@@ -1,7 +1,7 @@
 import { GuestRarity, MaleGuest, FemaleGuest, Gender, GuestReceptionData, WealthTier } from '../types/game';
 
-const MALE_NAMES = ['Aric', 'Borel', 'Caelen', 'Drystan', 'Elian', 'Falk', 'Gideon', 'Hadrian', 'Igor', 'Jorin', 'Kael', 'Lucian', 'Mordecai', 'Niven', 'Orion', 'Perrin', 'Quinn', 'Rowan', 'Silas', 'Thorne', 'Urien', 'Valerius', 'Wystan', 'Xander', 'Yorick', 'Zane'];
-const FEMALE_NAMES = ['Aria', 'Beatrix', 'Cassia', 'Delia', 'Eira', 'Fiona', 'Ginevra', 'Helena', 'Isolde', 'Juno', 'Kira', 'Livia', 'Morgana', 'Nia', 'Ophelia', 'Petra', 'Qiana', 'Rhea', 'Seraphina', 'Talia', 'Ursula', 'Vesper', 'Wren', 'Xenia', 'Yvaine', 'Zara'];
+const MALE_NAMES = ['亚瑟', '博雷尔', '卡伦', '德莱斯特', '伊利安', '法尔克', '吉迪恩', '哈德良', '伊戈尔', '乔林', '凯尔', '卢锡安', '莫迪凯', '尼文', '奥里昂', '佩林', '奎恩', '罗温', '塞拉斯', '索恩', '乌里安', '瓦莱里乌斯', '威斯坦', '桑德', '约里克', '赞恩'];
+const FEMALE_NAMES = ['艾莉亚', '贝娅特丽克丝', '卡西娅', '黛莉亚', '埃拉', '菲奥娜', '吉内薇拉', '海伦娜', '伊索尔德', '朱诺', '基拉', '莉维亚', '摩根娜', '妮娅', '奥菲莉亚', '佩特拉', '奇亚娜', '蕾亚', '塞拉菲娜', '塔莉亚', '乌苏拉', '维斯帕', '雷恩', '塞妮娅', '伊万', '扎拉'];
 
 const WEAKNESSES = ['贪婪', '傲慢', '胆怯', '虚荣', '孤僻'];
 const XP_PREFS = ['服从', '痛苦', '支配', '温柔', '狂野'];
@@ -11,19 +11,19 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 
 const getStatRange = (rarity: GuestRarity) => {
   switch (rarity) {
-    case 'N': return { min: 10, max: 30 };
-    case 'R': return { min: 30, max: 50 };
-    case 'SR': return { min: 50, max: 80 };
-    case 'SSR': return { min: 80, max: 100 };
+    case '普通': return { min: 10, max: 30 };
+    case '稀有': return { min: 30, max: 50 };
+    case '史诗': return { min: 50, max: 80 };
+    case '传说': return { min: 80, max: 100 };
   }
 };
 
 const getWealthTier = (rarity: GuestRarity): WealthTier => {
   switch (rarity) {
-    case 'N': return '贫穷';
-    case 'R': return '平民';
-    case 'SR': return '富裕';
-    case 'SSR': return '贵族';
+    case '普通': return '贫穷';
+    case '稀有': return '平民';
+    case '史诗': return '富裕';
+    case '传说': return '贵族';
   }
 };
 
@@ -145,10 +145,10 @@ export const generateDailyQueue = (reputation: number, capacity: number) => {
   
   for (let i = 0; i < queueSize; i++) {
     const r = Math.random() * 100;
-    let rarity: GuestRarity = 'N';
-    if (r < reputation * 0.1) rarity = 'SSR';
-    else if (r < reputation * 0.3 + 10) rarity = 'SR';
-    else if (r < reputation * 0.6 + 30) rarity = 'R';
+    let rarity: GuestRarity = '普通';
+    if (r < reputation * 0.1) rarity = '传说';
+    else if (r < reputation * 0.3 + 10) rarity = '史诗';
+    else if (r < reputation * 0.6 + 30) rarity = '稀有';
     
     if (Math.random() > 0.5) {
       queue.push(generateMaleGuest(rarity));

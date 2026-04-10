@@ -3,16 +3,19 @@ import { useGameStore } from '../store/gameStore';
 import { UserPlus, UserX, Users } from 'lucide-react';
 import { clsx } from 'clsx';
 
-import { GuestRarity } from '../types/game';
+import type { GuestRarity } from '../types/game';
+import { getRarityColor } from '../utils/ui';
 
 const RarityColor = (rarity: GuestRarity) => {
-  switch (rarity) {
-    case 'N': return 'text-zinc-400 border-zinc-600';
-    case 'R': return 'text-blue-400 border-blue-600';
-    case 'SR': return 'text-purple-400 border-purple-600';
-    case 'SSR': return 'text-amber-400 border-amber-600';
-    default: return 'text-zinc-400 border-zinc-600';
-  }
+  return getRarityColor(rarity);
+};
+
+const RarityBadge = ({ rarity }: { rarity: string }) => {
+  return (
+    <span className={clsx("text-[10px] px-1 py-0.5 rounded border font-bold border-current", getRarityColor(rarity))}>
+      {rarity}
+    </span>
+  );
 };
 
 export const QueuePanel: React.FC = () => {
