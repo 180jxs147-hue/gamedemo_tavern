@@ -1,0 +1,51 @@
+{
+  "note": "该清单用于离线/半离线生成与替换 public/assets 下的图片。每个条目包含推荐 prompt 与目标文件路径。替换同名文件即可生效。",
+  "assets": [
+    {
+      "path": "public/assets/backgrounds/tavern_day.jpg",
+      "image_size": "landscape_16_9",
+      "prompt": "elegant fantasy tavern interior, warm sunlight, oak wood, brass details, cozy atmosphere, highly detailed, masterpiece"
+    },
+    {
+      "path": "public/assets/backgrounds/tavern_night.jpg",
+      "image_size": "landscape_16_9",
+      "prompt": "elegant fantasy tavern interior, dim candlelight, mysterious atmosphere, crimson and gold accents, luxurious gothic, highly detailed, masterpiece"
+    },
+    {
+      "path": "public/assets/textures/parchment.jpg",
+      "image_size": "square",
+      "prompt": "old parchment paper texture, warm brown tones, elegant"
+    },
+    {
+      "path": "public/assets/portraits/silhouette_male.jpg",
+      "image_size": "square",
+      "prompt": "elegant fantasy portrait silhouette Male guest, warm tavern lighting, brown tones"
+    },
+    {
+      "path": "public/assets/portraits/silhouette_female.jpg",
+      "image_size": "square",
+      "prompt": "elegant fantasy portrait silhouette Female guest, warm tavern lighting, brown tones"
+    },
+    {
+      "path": "public/assets/portraits/silhouette_asset.jpg",
+      "image_size": "square",
+      "prompt": "elegant fantasy portrait silhouette Female asset, warm tavern lighting, purple and brown tones, elegant"
+    },
+    {
+      "path": "public/assets/portraits/detailed_male.jpg",
+      "image_size": "portrait_4_3",
+      "prompt": "elegant fantasy portrait, handsome man, tavern light, warm brown tones, highly detailed, masterpiece"
+    },
+    {
+      "path": "public/assets/portraits/detailed_female.jpg",
+      "image_size": "portrait_4_3",
+      "prompt": "elegant fantasy portrait, beautiful woman, tavern light, warm brown tones, highly detailed, masterpiece"
+    },
+    {
+      "path": "public/assets/portraits/detailed_asset.jpg",
+      "image_size": "portrait_4_3",
+      "prompt": "elegant fantasy portrait, beautiful woman asset, dim tavern light, purple glow, warm brown tones, highly detailed, masterpiece"
+    }
+  ]
+}
+
