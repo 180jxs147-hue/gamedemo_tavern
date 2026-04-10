@@ -92,54 +92,60 @@ export const useGameStore = create<GameState>()(
       nextPhase: () => {
         const { timePhase, guests, assets, day, resources } = get();
         
-        if (timePhase === 'LateNight') {
+if (timePhase === 'LateNight') {
           // 执行深夜结算
           let roomIncome = 0;
           let serviceIncome = 0;
-          const bankruptGuests: string[] = [];
+          const bankruptGuests: string[] = []; // 这里复用此字段作为离开的客人记录
           
+          const getRoomFee = (tier: string) => {
+            switch(tier) {
+              case '贫穷': return 5;
+              case '平民': return 15;
+              case '富裕': return 40;
+              case '贵族': return 100;
+              default: return 10;
+            }
+          };
+
+          const getServiceFee = (tier: string, charm: number, impulse: number) => {
+            const base = Math.floor(charm * 1.5 + impulse);
+            switch(tier) {
+              case '贫穷': return Math.min(base, 20);
+              case '平民': return Math.min(base, 60);
+              case '富裕': return Math.min(base, 150);
+              case '贵族': return base * 2;
+              default: return base;
+            }
+          };
+
           const updatedGuests = guests.map(g => {
-            if (g.gender !== 'Male') return g;
-            const male = g as MaleGuest;
+            const updated = { ...g, daysStayed: g.daysStayed + 1 };
             
-            // 1. 房费结算
-            let cost = 10;
-            let currentWealth = male.wealth;
-            
-            if (currentWealth >= cost) {
-              roomIncome += cost;
-              currentWealth -= cost;
-            } else {
-              roomIncome += currentWealth;
-              currentWealth = 0;
-            }
-            
-            // 2. 服务费结算
-            if (male.assignedAssetId && currentWealth > 0) {
-              const asset = assets.find(a => a.id === male.assignedAssetId);
-              if (asset) {
-                const serviceFee = Math.floor(asset.charm * 1.5 + male.impulse);
-                const actualFee = Math.min(serviceFee, currentWealth);
-                serviceIncome += actualFee;
-                currentWealth -= actualFee;
+            // 房费结算
+            roomIncome += getRoomFee(updated.wealthTier);
+
+            // 服务费结算 (仅限男客)
+            if (updated.gender === 'Male') {
+              const male = updated as typeof updated & { impulse: number, assignedAssetId?: string };
+              if (male.assignedAssetId) {
+                const asset = assets.find(a => a.id === male.assignedAssetId);
+                if (asset) {
+                  serviceIncome += getServiceFee(male.wealthTier, asset.charm, male.impulse);
+                }
               }
+              male.assignedAssetId = undefined; // 清空服务分配
             }
-            
-            return { ...male, wealth: currentWealth, assignedAssetId: undefined };
+            return updated;
           }).filter(g => {
-            if (g.gender === 'Male' && (g as MaleGuest).wealth <= 0) {
-              bankruptGuests.push(g.name);
-              return false; // 破产离开
+            if (g.daysStayed >= g.stayDuration) {
+              bankruptGuests.push(`${g.name} (到期搬离)`);
+              return false; // 到期离开
             }
             return true;
           });
 
-          // 计算女性客人房费（如果有女性客人在客房且未被捕获）
-          // 暂时简单处理：只算男客房费，女客如果不消费也不付房费，或者固定付房费
-          // 这里的简化：女客如果不被捕获第二天直接走人，或继续待着。为了游戏性，假设女客最多待1天。
-          const finalGuests = updatedGuests.filter(g => g.gender === 'Male');
-
-          const netProfit = roomIncome + serviceIncome; // - salaryExpense
+          const netProfit = roomIncome + serviceIncome;
           
           const report: SettlementReport = {
             day,
@@ -159,7 +165,7 @@ export const useGameStore = create<GameState>()(
               ap: resources.maxAp, // 恢复行动力
               gold: resources.gold + netProfit
             },
-            guests: finalGuests,
+            guests: updatedGuests,
             latestReport: report,
             queue: generateDailyQueue(resources.reputation, MAX_GUESTS), // 新一天的队列
             selectedEntity: null

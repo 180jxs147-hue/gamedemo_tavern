@@ -39,7 +39,7 @@ export const IntelPanel: React.FC<Props> = ({ guest }) => {
           </svg>
         </div>
         
-        <h3 className="text-[#e6b36e] text-center font-bold tracking-widest mb-4">酒馆百科：势力</h3>
+        <h3 className="text-[#e6b36e] text-center font-bold tracking-widest mb-4">情报百科</h3>
         
         <div className="w-24 h-24 mb-4 border border-[#543b2b] bg-[#120e0d] p-2 flex items-center justify-center rounded">
           <img src={reception.encyclopediaEntry.image} alt={reception.encyclopediaEntry.title} className="w-full h-full object-contain" />

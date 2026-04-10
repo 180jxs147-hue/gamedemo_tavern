@@ -109,10 +109,9 @@ export const GuestModal: React.FC<GuestModalProps> = ({ guest, onClose }) => {
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 mb-6">
             {isMale ? (
               <>
-                <StatRow label="当前财力" value={`${male.wealth} G`} icon={<Coins className="w-4 h-4 text-amber-400" />} />
+                <StatRow label="财力评估" value={male.wealthTier} icon={<Coins className="w-4 h-4 text-amber-400" />} />
                 <StatRow label="消费冲动" value={male.impulse} icon={<Zap className="w-4 h-4 text-red-400" />} />
-                <StatRow label="战斗力" value={male.combat} icon={<Shield className="w-4 h-4 text-zinc-400" />} />
-                <StatRow label="阵营" value={male.isGoodGuy ? '好人' : '恶徒'} isHidden />
+                <StatRow label="管理能力" value={male.management} icon={<Brain className="w-4 h-4 text-blue-400" />} />
                 <StatRow label="XP偏好" value={male.xpPreference} isHidden />
               </>
             ) : (

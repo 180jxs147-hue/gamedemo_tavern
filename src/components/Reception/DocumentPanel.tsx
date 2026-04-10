@@ -35,16 +35,20 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
 
         <div className="mt-4 border-t border-[#543b2b] pt-2 text-sm text-[#cbbba9] flex flex-col gap-2">
           <div className="flex justify-between">
+            <span className="text-[#8c7a6b]">性别</span>
+            <span>{guest.gender === 'Male' ? '男性' : '女性'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[#8c7a6b]">财力评估</span>
+            <span>{guest.wealthTier}</span>
+          </div>
+          <div className="flex justify-between">
             <span className="text-[#8c7a6b]">签发地</span>
             <span>{reception.idCard.origin}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[#8c7a6b]">有效期</span>
-            <span>{reception.idCard.validity}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-[#8c7a6b]">通行权限</span>
-            <span className="text-[#8c3f2b] font-bold">边境一等</span>
+            <span className="text-[#8c7a6b]">预计停留</span>
+            <span className="text-[#8c3f2b] font-bold">{guest.stayDuration} 天</span>
           </div>
         </div>
       </div>
@@ -55,19 +59,19 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
         
         <div className="flex flex-col gap-3 text-sm font-bold">
           <CheckItem 
-            label="通行证 身份/有效期" 
-            checked={reception.checklist.idChecked} 
-            onClick={() => checkReceptionItem(guest.id, 'idChecked')} 
+            label="停留意向 确认" 
+            checked={reception.checklist.durationAssessed} 
+            onClick={() => checkReceptionItem(guest.id, 'durationAssessed')} 
           />
           <CheckItem 
-            label="行程目的 真实性" 
-            checked={reception.checklist.purposeVerified} 
-            onClick={() => checkReceptionItem(guest.id, 'purposeVerified')} 
+            label="偏好/癖好 探查" 
+            checked={reception.checklist.preferenceAssessed} 
+            onClick={() => checkReceptionItem(guest.id, 'preferenceAssessed')} 
           />
           <CheckItem 
-            label="危险物品/背景 评估" 
-            checked={reception.checklist.dangerAssessed} 
-            onClick={() => checkReceptionItem(guest.id, 'dangerAssessed')} 
+            label={guest.gender === 'Male' ? '特殊服务意向 评估' : '防备心/诱捕难度 评估'} 
+            checked={reception.checklist.targetAssessed} 
+            onClick={() => checkReceptionItem(guest.id, 'targetAssessed')} 
           />
         </div>
       </div>

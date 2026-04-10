@@ -1,12 +1,13 @@
 export type TimePhase = 'Morning' | 'Day' | 'Night' | 'LateNight';
 export type GuestRarity = 'N' | 'R' | 'SR' | 'SSR';
 export type Gender = 'Male' | 'Female';
+export type WealthTier = '贫穷' | '平民' | '富裕' | '贵族';
 
 export interface DialogueOption {
   id: string;
   text: string;
   response: string;
-  checkItemId?: 'idChecked' | 'purposeVerified' | 'dangerAssessed';
+  checkItemId?: 'durationAssessed' | 'preferenceAssessed' | 'targetAssessed';
 }
 
 export interface GuestReceptionData {
@@ -23,9 +24,9 @@ export interface GuestReceptionData {
   };
   dialogues: DialogueOption[];
   checklist: {
-    idChecked: boolean;
-    purposeVerified: boolean;
-    dangerAssessed: boolean;
+    durationAssessed: boolean;
+    preferenceAssessed: boolean;
+    targetAssessed: boolean;
   };
   rumorText: string;
   encyclopediaEntry: {
@@ -49,6 +50,9 @@ export interface BaseGuest {
   name: string;
   gender: Gender;
   rarity: GuestRarity;
+  wealthTier: WealthTier;
+  stayDuration: number;
+  daysStayed: number;
   status: 'Waiting' | 'CheckedIn' | 'Captured' | 'Employed' | 'Left';
   isInvestigated: boolean; // 是否已被调查揭露隐藏情报
   reception?: GuestReceptionData;
@@ -56,13 +60,10 @@ export interface BaseGuest {
 
 export interface MaleGuest extends BaseGuest {
   gender: 'Male';
-  wealth: number;
-  maxWealth: number;
   impulse: number;
   combat: number;
   management: number;
   // 隐藏情报
-  isGoodGuy: boolean;
   xpPreference: string;
   // 服务状态
   assignedAssetId?: string; // 被分配的服务人员
