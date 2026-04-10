@@ -24,6 +24,10 @@ interface GameState {
   trainAsset: (assetId: string) => boolean;
   assignService: (maleId: string, assetId: string) => void;
   resetGame: () => void;
+  
+  // 交互选择状态
+  selectedEntity: { type: 'guest' | 'asset'; id: string } | null;
+  setSelectedEntity: (entity: { type: 'guest' | 'asset'; id: string } | null) => void;
 }
 
 const INITIAL_RESOURCES: GameResources = {
@@ -57,6 +61,9 @@ export const useGameStore = create<GameState>()(
       assets: [],
       facilities: [],
       latestReport: null,
+      selectedEntity: null,
+
+      setSelectedEntity: (entity) => set({ selectedEntity: entity }),
 
       nextPhase: () => {
         const { timePhase, guests, assets, day, resources } = get();
@@ -130,10 +137,11 @@ export const useGameStore = create<GameState>()(
             },
             guests: finalGuests,
             latestReport: report,
-            queue: generateDailyQueue(resources.reputation, MAX_GUESTS) // 新一天的队列
+            queue: generateDailyQueue(resources.reputation, MAX_GUESTS), // 新一天的队列
+            selectedEntity: null
           });
         } else {
-          set({ timePhase: getNextPhase(timePhase) });
+          set({ timePhase: getNextPhase(timePhase), selectedEntity: null });
         }
       },
 

@@ -4,6 +4,7 @@ import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
 import { Coins, Skull, ArrowRight, TrendingUp } from 'lucide-react';
 import { clsx } from 'clsx';
+import { getImageUrl } from '../utils/imageHelper';
 
 interface SettlementModalProps {
   report: SettlementReport;
@@ -22,7 +23,7 @@ export const SettlementModal: React.FC<SettlementModalProps> = ({ report }) => {
         exit={{ opacity: 0, scale: 0.9, y: -20 }}
         className="bg-zinc-900 border-2 border-amber-900 shadow-[0_0_50px_rgba(184,151,69,0.2)] max-w-md w-full rounded-sm overflow-hidden flex flex-col relative"
       >
-        <div className="absolute inset-0 bg-[url('https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=old%20parchment%20paper%20texture%20dark%20elegant&image_size=square')] opacity-10 pointer-events-none mix-blend-overlay" />
+        <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url(${getImageUrl('old parchment paper texture dark elegant', 'square')})` }} />
 
         <div className="p-8 relative z-10 flex flex-col space-y-6">
           <div className="text-center border-b border-amber-900/50 pb-4">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
+import { getImageUrl } from '../utils/imageHelper';
 import { UserPlus, UserX, Users } from 'lucide-react';
 import { clsx } from 'clsx';
 import { GuestRarity } from '../types/game';
@@ -51,7 +52,7 @@ export const QueuePanel: React.FC = () => {
               </div>
               <div className="w-10 h-10 bg-zinc-800 border border-zinc-700 rounded-sm overflow-hidden flex items-center justify-center">
                 <img 
-                  src={`https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=dark%20fantasy%20portrait%20silhouette%20${queue[0].gender}%20guest%20elegant&image_size=square`} 
+                  src={getImageUrl(`dark fantasy portrait silhouette ${queue[0].gender} guest elegant`, 'square')}
                   alt="portrait" 
                   className="w-full h-full object-cover opacity-60"
                 />
