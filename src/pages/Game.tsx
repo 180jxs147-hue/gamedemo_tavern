@@ -14,25 +14,25 @@ export const Game: React.FC = () => {
   const { timePhase, latestReport, selectedEntity } = useGameStore();
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-zinc-950 text-zinc-300 font-sans overflow-hidden">
+    <div className="flex flex-col h-screen w-screen bg-[color:var(--rt-bg)] text-[color:var(--rt-text)] font-sans overflow-hidden">
       <Topbar />
 
-      <div className="flex flex-1 overflow-hidden bg-black/50">
+      <div className="flex flex-1 overflow-hidden bg-[color:var(--rt-surface-2)]">
         {/* Left Sidebar: Guests & Queue */}
-        <aside className="w-80 bg-zinc-900/80 border-r border-amber-900/30 flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_-10px_0_20px_rgba(0,0,0,0.5)] z-20">
+        <aside className="w-80 bg-[color:var(--rt-surface)] border-r border-[color:var(--rt-border)] flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_-10px_0_20px_rgba(0,0,0,0.5)] z-20">
           {timePhase === 'Morning' && <QueuePanel />}
           <GuestList />
         </aside>
 
         {/* Center: Main Dashboard / Detail View */}
-        <main className="flex-1 relative flex flex-col z-10 bg-zinc-950/80">
+        <main className="flex-1 relative flex flex-col z-10 bg-[color:var(--rt-surface-2)]">
           {selectedEntity === null && <TavernOverview />}
           {selectedEntity?.type === 'guest' && <GuestDetailView />}
           {selectedEntity?.type === 'asset' && <AssetDetailView />}
         </main>
 
         {/* Right Sidebar: Assets & Facilities */}
-        <aside className="w-80 bg-zinc-900/80 border-l border-amber-900/30 flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_10px_0_20px_rgba(0,0,0,0.5)] z-20">
+        <aside className="w-80 bg-[color:var(--rt-surface)] border-l border-[color:var(--rt-border)] flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_10px_0_20px_rgba(0,0,0,0.5)] z-20">
           <AssetsPanel />
         </aside>
       </div>

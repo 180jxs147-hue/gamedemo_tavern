@@ -1,8 +1,8 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Heart, Activity, Gem, BookOpen } from 'lucide-react';
-import { getImageUrl } from '../utils/imageHelper';
 import { clsx } from 'clsx';
+import { GeneratedImage } from './GeneratedImage';
 
 export const AssetsPanel: React.FC = () => {
   const { assets, trainAsset, resources, selectedEntity, setSelectedEntity } = useGameStore();
@@ -10,16 +10,16 @@ export const AssetsPanel: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-purple-400 font-serif font-bold text-lg flex items-center">
-          <Gem className="w-5 h-5 mr-2" />
+        <h2 className="text-[color:var(--rt-accent)] font-serif font-bold text-lg flex items-center">
+          <Gem className="w-5 h-5 mr-2 text-[#a57b3c]" />
           地下暗房资产
         </h2>
-        <span className="text-xs text-zinc-400">{assets.length} 资产</span>
+        <span className="text-xs text-[color:var(--rt-muted)]">{assets.length} 资产</span>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
         {assets.length === 0 ? (
-          <div className="text-center py-10 text-zinc-600 text-sm border border-zinc-800 border-dashed rounded-sm">
+          <div className="text-center py-10 text-[color:var(--rt-muted)] text-sm border border-[color:var(--rt-border)] border-dashed rounded-sm">
             暂无捕获的资产
           </div>
         ) : (
@@ -30,29 +30,33 @@ export const AssetsPanel: React.FC = () => {
                 key={asset.id} 
                 onClick={() => setSelectedEntity({ type: 'asset', id: asset.id })}
                 className={clsx(
-                  "bg-zinc-900 border rounded-sm p-3 shadow-md flex flex-col relative overflow-hidden group cursor-pointer transition-all hover:bg-zinc-800",
-                  isSelected ? "border-purple-500 translate-x-2 shadow-[0_0_15px_rgba(168,85,247,0.2)]" : "border-purple-900/30 hover:border-purple-700/50"
+                  "bg-[color:var(--rt-surface)] border rounded-sm p-3 shadow-md flex flex-col relative overflow-hidden group cursor-pointer transition-all hover:bg-black/30",
+                  isSelected ? "border-[color:var(--rt-accent)] translate-x-2 shadow-[0_0_18px_rgba(202,163,93,0.16)]" : "border-[color:var(--rt-border)] hover:border-[color:var(--rt-border-strong)]"
                 )}
               >
                 <div className={clsx(
                   "absolute inset-0 pointer-events-none transition-opacity",
-                  isSelected ? "bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.2)_0%,transparent_70%)]" : "bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.1)_0%,transparent_70%)]"
+                  isSelected ? "bg-[radial-gradient(ellipse_at_top_right,rgba(202,163,93,0.18)_0%,transparent_70%)]" : "bg-[radial-gradient(ellipse_at_top_right,rgba(202,163,93,0.10)_0%,transparent_70%)]"
                 )} />
                 
                 <div className="flex justify-between items-start z-10">
                   <div>
-                    <h3 className={clsx("font-serif font-bold transition-colors", isSelected ? "text-purple-300" : "text-purple-100 group-hover:text-purple-300")}>
+                    <h3 className={clsx("font-serif font-bold transition-colors", isSelected ? "text-[color:var(--rt-accent)]" : "text-[color:var(--rt-text)] group-hover:text-[color:var(--rt-accent)]")}>
                       {asset.name}
                     </h3>
-                    <span className="text-[10px] bg-black/50 px-1 border border-purple-900/50 rounded-sm text-purple-400 mt-1 inline-block">
+                    <span className="text-[10px] bg-black/40 px-1 border border-[color:var(--rt-border)] rounded-sm text-[color:var(--rt-muted)] mt-1 inline-block">
                       {asset.rarity}
                     </span>
                   </div>
-                  <div className="w-10 h-10 bg-zinc-950 border border-purple-900/50 rounded-sm overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(168,85,247,0.2)]">
-                     <img 
-                      src={getImageUrl('dark fantasy portrait silhouette Female guest elegant purple glow', 'square')}
-                      alt="portrait" 
-                      className="w-full h-full object-cover opacity-80"
+                  <div className="w-10 h-10 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] rounded-sm overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(202,163,93,0.12)]">
+                    <GeneratedImage
+                      prompts={[
+                        'elegant fantasy portrait silhouette woman, warm tavern lighting, bronze and brown tones',
+                        'fantasy portrait silhouette woman, warm lighting, brown tones',
+                      ]}
+                      size="square"
+                      alt="portrait"
+                      className="w-full h-full object-cover opacity-85"
                     />
                   </div>
                 </div>
@@ -72,7 +76,7 @@ export const AssetsPanel: React.FC = () => {
                     trainAsset(asset.id);
                   }}
                   disabled={resources.ap < 1}
-                  className="mt-3 py-1.5 w-full bg-purple-900/20 hover:bg-purple-900/40 text-purple-400 border border-purple-900/50 rounded-sm flex items-center justify-center text-xs transition-colors z-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-3 py-1.5 w-full bg-[color:var(--rt-surface-2)] hover:bg-black/40 text-[color:var(--rt-accent)] border border-[color:var(--rt-border-strong)] rounded-sm flex items-center justify-center text-xs transition-colors z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <BookOpen className="w-3 h-3 mr-1.5" />
                   调教训练 (-1 AP)

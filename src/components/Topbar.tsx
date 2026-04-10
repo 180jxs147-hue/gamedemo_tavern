@@ -26,11 +26,11 @@ export const Topbar: React.FC = () => {
   const { day, timePhase, resources } = useGameStore();
 
   return (
-    <header className="bg-zinc-950 border-b border-amber-900/30 text-zinc-300 p-4 flex justify-between items-center shadow-lg shadow-black/50">
+    <header className="bg-[color:var(--rt-surface)] border-b border-[color:var(--rt-border)] text-[color:var(--rt-text)] p-4 flex justify-between items-center shadow-lg shadow-black/50">
       <div className="flex items-center space-x-6">
-        <div className="flex items-center space-x-2 border border-amber-900/50 bg-zinc-900/50 px-4 py-1.5 rounded-sm">
-          <span className="text-amber-500 font-serif font-bold text-lg tracking-wider">DAY {day}</span>
-          <div className="w-px h-5 bg-amber-900/50 mx-2" />
+        <div className="flex items-center space-x-2 border border-[color:var(--rt-border-strong)] bg-[color:var(--rt-surface-2)] px-4 py-1.5 rounded-sm">
+          <span className="text-[color:var(--rt-accent)] font-serif font-bold text-lg tracking-wider">DAY {day}</span>
+          <div className="w-px h-5 bg-[color:var(--rt-border)] mx-2" />
           <div className="flex items-center space-x-2">
             <PhaseIcon phase={timePhase} />
             <span className={clsx(
@@ -48,14 +48,14 @@ export const Topbar: React.FC = () => {
 
       <div className="flex items-center space-x-4 font-serif">
         <ResourceBadge icon={<Zap className="w-4 h-4 text-cyan-400" />} value={`${resources.ap}/${resources.maxAp}`} label="行动力" />
-        <ResourceBadge icon={<Coins className="w-4 h-4 text-amber-400" />} value={resources.gold} label="金币" />
-        <ResourceBadge icon={<Package className="w-4 h-4 text-zinc-400" />} value={resources.materials} label="建材" />
-        <ResourceBadge icon={<Star className="w-4 h-4 text-purple-400" />} value={resources.reputation} label="声望" />
+        <ResourceBadge icon={<Coins className="w-4 h-4 text-[color:var(--rt-accent)]" />} value={resources.gold} label="金币" />
+        <ResourceBadge icon={<Package className="w-4 h-4 text-[color:var(--rt-muted)]" />} value={resources.materials} label="建材" />
+        <ResourceBadge icon={<Star className="w-4 h-4 text-[#a57b3c]" />} value={resources.reputation} label="声望" />
         
-        <div className="flex items-center space-x-2 bg-zinc-900/50 border border-red-900/30 px-3 py-1.5 rounded-sm text-sm ml-4">
-          <ShieldAlert className={clsx("w-4 h-4", resources.alertLevel > 50 ? "text-red-500 animate-pulse" : "text-red-900")} />
-          <span className="text-zinc-400">警戒</span>
-          <span className={clsx("font-bold", resources.alertLevel > 50 ? "text-red-500" : "text-zinc-300")}>{resources.alertLevel}%</span>
+        <div className="flex items-center space-x-2 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] px-3 py-1.5 rounded-sm text-sm ml-4">
+          <ShieldAlert className={clsx("w-4 h-4", resources.alertLevel > 50 ? "text-[color:var(--rt-danger)] animate-pulse" : "text-[#6b3a25]")} />
+          <span className="text-[color:var(--rt-muted)]">警戒</span>
+          <span className={clsx("font-bold", resources.alertLevel > 50 ? "text-[color:var(--rt-danger)]" : "text-[color:var(--rt-text)]")}>{resources.alertLevel}%</span>
         </div>
       </div>
     </header>
@@ -63,8 +63,8 @@ export const Topbar: React.FC = () => {
 };
 
 const ResourceBadge = ({ icon, value, label }: { icon: React.ReactNode, value: string | number, label: string }) => (
-  <div className="flex items-center space-x-2 bg-zinc-900/50 border border-amber-900/20 px-3 py-1.5 rounded-sm text-sm" title={label}>
+  <div className="flex items-center space-x-2 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] px-3 py-1.5 rounded-sm text-sm" title={label}>
     {icon}
-    <span className="font-bold text-amber-50">{value}</span>
+    <span className="font-bold text-[color:var(--rt-text)]">{value}</span>
   </div>
 );

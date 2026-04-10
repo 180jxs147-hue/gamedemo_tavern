@@ -3,8 +3,26 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --rt-bg: #140f0a;
+    --rt-surface: rgba(27, 20, 14, 0.88);
+    --rt-surface-2: rgba(19, 14, 10, 0.82);
+    --rt-border: rgba(120, 79, 43, 0.4);
+    --rt-border-strong: rgba(160, 114, 70, 0.62);
+    --rt-text: #eadcc6;
+    --rt-muted: #bca787;
+    --rt-accent: #caa35d;
+    --rt-accent-2: #8b6a3a;
+    --rt-danger: #9b2d2d;
+  }
+
   body {
-    @apply bg-zinc-950 text-zinc-300;
+    @apply text-[color:var(--rt-text)] font-sans;
+    background:
+      radial-gradient(1000px 600px at 50% 10%, rgba(202, 163, 93, 0.10), transparent 60%),
+      radial-gradient(900px 600px at 20% 90%, rgba(139, 106, 58, 0.12), transparent 60%),
+      radial-gradient(900px 700px at 90% 80%, rgba(155, 45, 45, 0.06), transparent 60%),
+      linear-gradient(180deg, #120d08 0%, #140f0a 40%, #0f0b07 100%);
   }
 }
 
@@ -14,10 +32,15 @@
     height: 6px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-zinc-900/50 rounded-full;
+    @apply rounded-full;
+    background: rgba(27, 20, 14, 0.55);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-amber-900/50 rounded-full hover:bg-amber-700/50 transition-colors;
+    @apply rounded-full transition-colors;
+    background: rgba(120, 79, 43, 0.55);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(160, 114, 70, 0.62);
   }
 }
 

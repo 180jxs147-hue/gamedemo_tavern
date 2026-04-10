@@ -16,41 +16,41 @@ export const SettlementModal: React.FC<SettlementModalProps> = ({ report }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: -20 }}
-        className="bg-zinc-900 border-2 border-amber-900 shadow-[0_0_50px_rgba(184,151,69,0.2)] max-w-md w-full rounded-sm overflow-hidden flex flex-col relative"
+        className="bg-[color:var(--rt-surface)] border-2 border-[color:var(--rt-border-strong)] shadow-[0_0_50px_rgba(202,163,93,0.18)] max-w-md w-full rounded-sm overflow-hidden flex flex-col relative"
       >
-        <div className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url(${getImageUrl('old parchment paper texture dark elegant', 'square')})` }} />
+        <div className="absolute inset-0 bg-cover bg-center opacity-12 pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url(${getImageUrl('old parchment paper texture, warm brown tones, elegant', 'square')})` }} />
 
         <div className="p-8 relative z-10 flex flex-col space-y-6">
-          <div className="text-center border-b border-amber-900/50 pb-4">
-            <h2 className="text-2xl font-serif font-bold text-amber-500 tracking-[0.2em]">深夜结算账单</h2>
-            <p className="text-zinc-500 font-serif text-sm mt-1">第 {report.day} 天营业结束</p>
+          <div className="text-center border-b border-[color:var(--rt-border)] pb-4">
+            <h2 className="text-2xl font-serif font-bold text-[color:var(--rt-accent)] tracking-[0.2em]">深夜结算账单</h2>
+            <p className="text-[color:var(--rt-muted)] font-serif text-sm mt-1">第 {report.day} 天营业结束</p>
           </div>
 
           <div className="space-y-4 font-mono text-sm">
-            <div className="flex justify-between items-center bg-zinc-950/50 p-3 border border-zinc-800 rounded-sm">
-              <span className="text-zinc-400">基础房费收入</span>
+            <div className="flex justify-between items-center bg-[color:var(--rt-surface-2)] p-3 border border-[color:var(--rt-border)] rounded-sm">
+              <span className="text-[color:var(--rt-muted)]">基础房费收入</span>
               <span className="text-green-400 flex items-center"><Coins className="w-4 h-4 mr-1" /> +{report.roomIncome} G</span>
             </div>
             
-            <div className="flex justify-between items-center bg-zinc-950/50 p-3 border border-zinc-800 rounded-sm">
-              <span className="text-zinc-400">特殊服务费收入</span>
+            <div className="flex justify-between items-center bg-[color:var(--rt-surface-2)] p-3 border border-[color:var(--rt-border)] rounded-sm">
+              <span className="text-[color:var(--rt-muted)]">特殊服务费收入</span>
               <span className="text-green-400 flex items-center"><Coins className="w-4 h-4 mr-1" /> +{report.serviceIncome} G</span>
             </div>
 
-            <div className="flex justify-between items-center bg-zinc-950/50 p-3 border border-zinc-800 rounded-sm">
-              <span className="text-zinc-400">员工薪资支出</span>
+            <div className="flex justify-between items-center bg-[color:var(--rt-surface-2)] p-3 border border-[color:var(--rt-border)] rounded-sm">
+              <span className="text-[color:var(--rt-muted)]">员工薪资支出</span>
               <span className="text-red-400 flex items-center"><Coins className="w-4 h-4 mr-1" /> -{report.salaryExpense} G</span>
             </div>
 
-            <div className="border-t border-dashed border-zinc-700 pt-4 mt-2">
+            <div className="border-t border-dashed border-[color:var(--rt-border)] pt-4 mt-2">
               <div className="flex justify-between items-center">
-                <span className="text-zinc-300 font-bold font-serif text-lg">今日净利润</span>
-                <span className={clsx("font-bold text-xl flex items-center", report.netProfit >= 0 ? "text-amber-500" : "text-red-500")}>
+                <span className="text-[color:var(--rt-text)] font-bold font-serif text-lg">今日净利润</span>
+                <span className={clsx("font-bold text-xl flex items-center", report.netProfit >= 0 ? "text-[color:var(--rt-accent)]" : "text-[color:var(--rt-danger)]")}>
                   <TrendingUp className="w-5 h-5 mr-2" />
                   {report.netProfit >= 0 ? '+' : ''}{report.netProfit} G
                 </span>
@@ -72,7 +72,7 @@ export const SettlementModal: React.FC<SettlementModalProps> = ({ report }) => {
 
           <button
             onClick={resetReport}
-            className="mt-6 w-full py-3 bg-amber-900 hover:bg-amber-800 text-amber-50 font-serif font-bold tracking-widest flex items-center justify-center transition-colors shadow-lg"
+            className="mt-6 w-full py-3 bg-[color:var(--rt-accent-2)] hover:bg-[color:var(--rt-accent)] text-[#1a120c] font-serif font-bold tracking-widest flex items-center justify-center transition-colors shadow-lg"
           >
             开启新的一天 <ArrowRight className="w-5 h-5 ml-2" />
           </button>
