@@ -2,8 +2,8 @@ import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { UserPlus, UserX, Users } from 'lucide-react';
 import { clsx } from 'clsx';
+
 import { GuestRarity } from '../types/game';
-import { GeneratedImage } from './GeneratedImage';
 
 const RarityColor = (rarity: GuestRarity) => {
   switch (rarity) {
@@ -51,14 +51,10 @@ export const QueuePanel: React.FC = () => {
                 </p>
               </div>
               <div className="w-10 h-10 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] rounded-sm overflow-hidden flex items-center justify-center">
-                <GeneratedImage
-                  prompts={[
-                    `elegant fantasy portrait silhouette ${queue[0].gender} guest, warm tavern lighting, brown tones`,
-                    `fantasy portrait silhouette ${queue[0].gender} guest, warm lighting`,
-                  ]}
-                  size="square"
-                  alt="portrait"
-                  className="w-full h-full object-cover opacity-70"
+                <img 
+                  src={queue[0].gender === 'Male' ? '/assets/portraits/silhouette_male.jpg' : '/assets/portraits/silhouette_female.jpg'}
+                  alt="portrait" 
+                  className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
                 />
               </div>
             </div>

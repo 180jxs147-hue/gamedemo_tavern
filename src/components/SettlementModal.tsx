@@ -4,7 +4,6 @@ import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
 import { Coins, Skull, ArrowRight, TrendingUp } from 'lucide-react';
 import { clsx } from 'clsx';
-import { getImageUrl } from '../utils/imageHelper';
 
 interface SettlementModalProps {
   report: SettlementReport;
@@ -23,7 +22,7 @@ export const SettlementModal: React.FC<SettlementModalProps> = ({ report }) => {
         exit={{ opacity: 0, scale: 0.9, y: -20 }}
         className="bg-[color:var(--rt-surface)] border-2 border-[color:var(--rt-border-strong)] shadow-[0_0_50px_rgba(202,163,93,0.18)] max-w-md w-full rounded-sm overflow-hidden flex flex-col relative"
       >
-        <div className="absolute inset-0 bg-cover bg-center opacity-12 pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url(${getImageUrl('old parchment paper texture, warm brown tones, elegant', 'square')})` }} />
+        <div className="absolute inset-0 bg-cover bg-center opacity-12 pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url(/assets/textures/parchment.jpg)` }} />
 
         <div className="p-8 relative z-10 flex flex-col space-y-6">
           <div className="text-center border-b border-[color:var(--rt-border)] pb-4">

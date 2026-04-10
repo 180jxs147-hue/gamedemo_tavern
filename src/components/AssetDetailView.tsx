@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { X, Heart, Activity, BookOpen, Star, Shield, Gem, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { GeneratedImage } from './GeneratedImage';
 
 export const AssetDetailView: React.FC = () => {
   const { selectedEntity, setSelectedEntity, assets, resources, trainAsset } = useGameStore();
@@ -14,11 +13,6 @@ export const AssetDetailView: React.FC = () => {
     setSelectedEntity(null);
     return null;
   }
-
-  const portraitPrompts = useMemo(() => ([
-    'elegant fantasy portrait, beautiful woman silhouette, warm tavern lighting, bronze and brown tones, highly detailed',
-    'fantasy portrait silhouette, woman, warm candlelight, brown tones, detailed',
-  ]), []);
 
   const handleTrain = () => trainAsset(asset.id);
 
@@ -53,13 +47,11 @@ export const AssetDetailView: React.FC = () => {
       <div className="flex flex-1 overflow-y-auto custom-scrollbar z-10 p-6 space-x-8">
         {/* Left Column: Portrait & Basic Info */}
         <div className="w-1/3 flex flex-col space-y-6">
-          <div className="aspect-[3/4] rounded-sm border-2 border-[color:var(--rt-border-strong)] overflow-hidden relative bg-[color:var(--rt-bg)] shadow-[0_0_30px_rgba(202,163,93,0.12)]">
-            <GeneratedImage
-              prompts={portraitPrompts}
-              size="portrait_4_3"
+          <div className="aspect-[3/4] rounded-sm border-2 border-[color:var(--rt-accent)]/50 overflow-hidden relative bg-[color:var(--rt-bg)] shadow-[0_0_30px_rgba(217,119,6,0.15)]">
+            <img
+              src="/assets/portraits/detailed_asset.jpg"
               alt="portrait"
-              className="w-full h-full object-cover opacity-90"
-              loading="eager"
+              className="w-full h-full object-cover opacity-90 mix-blend-screen"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--rt-bg)]/90 via-[color:var(--rt-bg)]/20 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">

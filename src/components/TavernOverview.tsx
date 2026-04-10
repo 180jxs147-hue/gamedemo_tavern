@@ -1,46 +1,28 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getImageUrl } from '../utils/imageHelper';
 import { Clock } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const TavernOverview: React.FC = () => {
   const { timePhase, nextPhase } = useGameStore();
-  const [imgIdx, setImgIdx] = useState(0);
 
-  const prompts = useMemo(() => {
-    const isDay = timePhase === 'Morning' || timePhase === 'Day';
-    const base = isDay
-      ? [
-        'elegant fantasy tavern interior, warm sunlight through windows, oak wood, brass details, cozy atmosphere, highly detailed',
-        'fantasy tavern interior, warm daylight, wooden bar, amber tones, detailed',
-      ]
-      : [
-        'elegant fantasy tavern interior, warm candlelight, oak wood, brass details, cozy atmosphere, highly detailed',
-        'fantasy tavern interior at night, candlelight, amber tones, detailed',
-      ];
-    return base;
-  }, [timePhase]);
-
-  const sceneSrc = useMemo(() => {
-    const prompt = prompts[Math.min(imgIdx, prompts.length - 1)] ?? '';
-    return getImageUrl(prompt, 'landscape_16_9');
-  }, [imgIdx, prompts]);
+  const bgImage = timePhase === 'Morning' || timePhase === 'Day'
+    ? '/assets/backgrounds/tavern_day.jpg'
+    : '/assets/backgrounds/tavern_night.jpg';
 
   return (
     <div className="relative flex-1 flex flex-col items-center justify-center p-8 h-full">
       <AnimatePresence mode="wait">
         <motion.img
           key={timePhase}
-          src={sceneSrc}
+          src={bgImage}
           alt="Tavern Scene"
           initial={{ opacity: 0, scale: 1.02 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
-          className="absolute inset-0 w-full h-full object-cover opacity-25 pointer-events-none"
-          onError={() => setImgIdx((v) => (v < prompts.length - 1 ? v + 1 : v))}
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none mix-blend-luminosity"
         />
       </AnimatePresence>
 

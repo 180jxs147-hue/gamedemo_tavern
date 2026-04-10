@@ -2,10 +2,10 @@ import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Heart, Activity, Gem, BookOpen } from 'lucide-react';
 import { clsx } from 'clsx';
-import { GeneratedImage } from './GeneratedImage';
 
 export const AssetsPanel: React.FC = () => {
   const { assets, trainAsset, resources, selectedEntity, setSelectedEntity } = useGameStore();
+
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -49,13 +49,9 @@ export const AssetsPanel: React.FC = () => {
                     </span>
                   </div>
                   <div className="w-10 h-10 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] rounded-sm overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(202,163,93,0.12)]">
-                    <GeneratedImage
-                      prompts={[
-                        'elegant fantasy portrait silhouette woman, warm tavern lighting, bronze and brown tones',
-                        'fantasy portrait silhouette woman, warm lighting, brown tones',
-                      ]}
-                      size="square"
-                      alt="portrait"
+                    <img 
+                      src="/assets/portraits/silhouette_asset.jpg"
+                      alt="portrait" 
                       className="w-full h-full object-cover opacity-85"
                     />
                   </div>

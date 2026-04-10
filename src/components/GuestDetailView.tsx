@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Guest, FemaleGuest, MaleGuest } from '../types/game';
 import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff, Coins, HeartPulse, Brain, FlaskConical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { GeneratedImage } from './GeneratedImage';
 
 export const GuestDetailView: React.FC = () => {
   const { selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, capture, assignService, assets } = useGameStore();
@@ -21,11 +20,6 @@ export const GuestDetailView: React.FC = () => {
   const isMale = guest.gender === 'Male';
   const female = guest as FemaleGuest;
   const male = guest as MaleGuest;
-
-  const portraitPrompts = useMemo(() => ([
-    `elegant fantasy portrait, ${guest.gender === 'Male' ? 'handsome man' : 'beautiful woman'}, tavern light, warm brown tones, ${guest.rarity} rarity, highly detailed`,
-    `fantasy portrait, ${guest.gender === 'Male' ? 'man' : 'woman'}, warm tavern lighting, detailed`,
-  ]), [guest.gender, guest.rarity]);
 
   const handleInvestigate = () => investigate(guest.id);
 
@@ -66,12 +60,10 @@ export const GuestDetailView: React.FC = () => {
         {/* Left Column: Portrait & Basic Info */}
         <div className="w-1/3 flex flex-col space-y-6">
           <div className="aspect-[3/4] rounded-sm border-2 border-[color:var(--rt-border-strong)] overflow-hidden relative bg-[color:var(--rt-bg)] shadow-2xl">
-            <GeneratedImage
-              prompts={portraitPrompts}
-              size="portrait_4_3"
+            <img
+              src={isMale ? '/assets/portraits/detailed_male.jpg' : '/assets/portraits/detailed_female.jpg'}
               alt="portrait"
               className="w-full h-full object-cover opacity-85"
-              loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--rt-bg)]/90 via-[color:var(--rt-bg)]/30 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
