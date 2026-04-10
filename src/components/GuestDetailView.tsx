@@ -118,7 +118,7 @@ export const GuestDetailView: React.FC = () => {
                 <StatRow label="消费冲动" value={male.impulse} icon={<Zap className="w-4 h-4 text-red-400" />} />
                 <StatRow label="战斗力" value={male.combat} icon={<Shield className="w-4 h-4 text-zinc-400" />} />
                 <StatRow label="管理能力" value={male.management} icon={<Brain className="w-4 h-4 text-blue-400" />} />
-                <StatRow label="XP偏好" value={male.xpPreference} isHidden />
+                <StatRow label="偏好/癖好" value={male.xpPreferences.join(' / ')} icon={<HeartPulse className="w-4 h-4 text-pink-400" />} isHidden />
               </>
             ) : (
               <>
@@ -126,8 +126,7 @@ export const GuestDetailView: React.FC = () => {
                 <StatRow label="体质" value={female.constitution} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
                 <StatRow label="意志力" value={female.willpower} icon={<Brain className="w-4 h-4 text-purple-400" />} />
                 <StatRow label="警觉度" value={female.alertness} icon={<EyeOff className="w-4 h-4 text-cyan-400" />} />
-                <StatRow label="致命弱点" value={female.weakness} isHidden />
-                <StatRow label="XP偏好" value={female.xpPreference} isHidden />
+                <StatRow label="性格/特点" value={female.traits.join(' / ')} isHidden />
               </>
             )}
           </div>

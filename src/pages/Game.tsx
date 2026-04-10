@@ -11,11 +11,12 @@ import { SettlementModal } from '../components/SettlementModal';
 import { AnimatePresence } from 'framer-motion';
 import { LogBar } from '../components/LogBar';
 import { DaytimeActionPanel } from '../components/DaytimeActionPanel';
-
+import { ServiceAssignmentView } from '../components/ServiceAssignmentView';
 import { ReceptionView } from '../components/Reception/ReceptionView';
 
 export const Game: React.FC = () => {
   const { timePhase, latestReport, selectedEntity } = useGameStore();
+  const [showServiceView, setShowServiceView] = React.useState(false);
 
   if (timePhase === 'Morning') {
     return (
@@ -48,6 +49,16 @@ export const Game: React.FC = () => {
           {selectedEntity?.type === 'guest' && <GuestDetailView />}
           {selectedEntity?.type === 'asset' && <AssetDetailView />}
           {timePhase === 'Day' && <DaytimeActionPanel />}
+          {(timePhase === 'Night' || timePhase === 'LateNight') && (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30">
+              <button 
+                onClick={() => setShowServiceView(true)}
+                className="px-8 py-3 bg-[#8c3f2b] hover:bg-[#a64a32] text-[#f2e6d9] border-2 border-[#e6b36e] font-bold rounded shadow-[0_0_20px_rgba(140,63,43,0.8)] text-lg tracking-widest transition-all hover:scale-105"
+              >
+                安排特殊服务
+              </button>
+            </div>
+          )}
         </main>
 
         {/* Right Sidebar: Assets & Facilities */}
@@ -57,6 +68,10 @@ export const Game: React.FC = () => {
       </div>
 
       <LogBar />
+
+      <AnimatePresence>
+        {showServiceView && <ServiceAssignmentView onClose={() => setShowServiceView(false)} />}
+      </AnimatePresence>
 
       {/* Modals */}
       <AnimatePresence>

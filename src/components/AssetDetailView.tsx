@@ -49,7 +49,7 @@ export const AssetDetailView: React.FC = () => {
                   {asset.rarity}
                 </span>
                 <span className="px-2 py-0.5 text-xs bg-black/50 border border-zinc-700/50 text-[#a09081] rounded-sm">
-                  {asset.weakness}
+                  {asset.traits.join(' / ')}
                 </span>
               </div>
             </div>

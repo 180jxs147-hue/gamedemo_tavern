@@ -197,21 +197,23 @@ if (timePhase === 'LateNight') {
 
             // 服务费结算 (仅限男客)
             if (updated.gender === 'Male') {
-              const male = updated as typeof updated & { xpPreference: string, impulse: number, assignedAssetId?: string };
+              const male = updated as typeof updated & { xpPreferences: string[], impulse: number, assignedAssetId?: string };
               if (male.assignedAssetId) {
                 const asset = assets.find(a => a.id === male.assignedAssetId);
                 if (asset) {
-                  const fee = getServiceFee(male.wealthTier, asset.charm, male.impulse);
+                  const matchCount = asset.traits.filter(t => male.xpPreferences.includes(t)).length;
+                  const matchMultiplier = 1 + (matchCount * 0.5); // 每个匹配特征增加50%收益
+                  
+                  const fee = Math.floor(getServiceFee(male.wealthTier, asset.charm, male.impulse) * matchMultiplier);
                   serviceIncome += fee;
                   
-                  // 根据xp生成满意度日志
                   const { addLog } = get();
-                  // 简化：这里假设有一定概率满足
-                  const isMatch = Math.random() > 0.3; // 70%概率满足
-                  if (isMatch) {
-                    addLog(`【服务结算】[${male.name}] 体验了 [${asset.name}] 的服务。完美契合了他的【${male.xpPreference}】癖好，他非常满意地支付了 ${fee} G。`, 'success');
+                  if (matchCount >= 2) {
+                    addLog(`【服务结算】[${male.name}] 体验了 [${asset.name}] 的服务。完美契合了他的多种癖好，他非常满意地支付了 ${fee} G。`, 'success');
+                  } else if (matchCount === 1) {
+                    addLog(`【服务结算】[${male.name}] 体验了 [${asset.name}] 的服务。部分满足了他的癖好，他支付了 ${fee} G。`, 'info');
                   } else {
-                    addLog(`【服务结算】[${male.name}] 体验了 [${asset.name}] 的服务。虽然未完全满足他的癖好，但他依然支付了 ${fee} G。`, 'info');
+                    addLog(`【服务结算】[${male.name}] 体验了 [${asset.name}] 的服务。虽然不对胃口，但他还是勉强支付了 ${fee} G。`, 'warning');
                   }
                 }
               }

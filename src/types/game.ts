@@ -57,6 +57,7 @@ export interface BaseGuest {
   daysStayed: number;
   status: 'Waiting' | 'CheckedIn' | 'Captured' | 'Employed' | 'Left';
   isInvestigated: boolean; // 是否已被调查揭露隐藏情报
+  traits: string[]; // 新增：人物多种特点
   reception?: GuestReceptionData;
 }
 
@@ -66,9 +67,8 @@ export interface MaleGuest extends BaseGuest {
   combat: number;
   management: number;
   // 隐藏情报
-  xpPreference: string;
-  // 服务状态
-  assignedAssetId?: string; // 被分配的服务人员
+  xpPreferences: string[]; // 偏好的女性特点（性癖）
+  assignedAssetId?: string; // 晚上被分配的服务资产ID
 }
 
 export interface FemaleGuest extends BaseGuest {
@@ -77,9 +77,6 @@ export interface FemaleGuest extends BaseGuest {
   alertness: number;
   willpower: number;
   constitution: number;
-  // 隐藏情报
-  weakness: string;
-  xpPreference: string;
   // 资产属性（被捕获后）
   obedience: number;
   charm: number;
