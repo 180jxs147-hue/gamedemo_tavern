@@ -2,6 +2,39 @@ export type TimePhase = 'Morning' | 'Day' | 'Night' | 'LateNight';
 export type GuestRarity = 'N' | 'R' | 'SR' | 'SSR';
 export type Gender = 'Male' | 'Female';
 
+export interface DialogueOption {
+  id: string;
+  text: string;
+  response: string;
+  checkItemId?: 'idChecked' | 'purposeVerified' | 'dangerAssessed';
+}
+
+export interface GuestReceptionData {
+  idCard: {
+    name: string;
+    origin: string;
+    profession: string;
+    validity: string;
+  };
+  itemVisible?: {
+    name: string;
+    desc: string;
+    icon: string;
+  };
+  dialogues: DialogueOption[];
+  checklist: {
+    idChecked: boolean;
+    purposeVerified: boolean;
+    dangerAssessed: boolean;
+  };
+  rumorText: string;
+  encyclopediaEntry: {
+    title: string;
+    desc: string;
+    image: string;
+  };
+}
+
 export interface GameResources {
   ap: number;
   maxAp: number;
@@ -18,6 +51,7 @@ export interface BaseGuest {
   rarity: GuestRarity;
   status: 'Waiting' | 'CheckedIn' | 'Captured' | 'Employed' | 'Left';
   isInvestigated: boolean; // 是否已被调查揭露隐藏情报
+  reception?: GuestReceptionData;
 }
 
 export interface MaleGuest extends BaseGuest {

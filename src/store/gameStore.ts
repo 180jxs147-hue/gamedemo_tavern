@@ -28,6 +28,9 @@ interface GameState {
   // 交互选择状态
   selectedEntity: { type: 'guest' | 'asset'; id: string } | null;
   setSelectedEntity: (entity: { type: 'guest' | 'asset'; id: string } | null) => void;
+
+  // 接待大厅状态
+  checkReceptionItem: (guestId: string, itemId: keyof NonNullable<Guest['reception']>['checklist']) => void;
 }
 
 const INITIAL_RESOURCES: GameResources = {
@@ -64,6 +67,27 @@ export const useGameStore = create<GameState>()(
       selectedEntity: null,
 
       setSelectedEntity: (entity) => set({ selectedEntity: entity }),
+
+      checkReceptionItem: (guestId, itemId) => {
+        const { queue } = get();
+        set({
+          queue: queue.map(g => {
+            if (g.id === guestId && g.reception) {
+              return {
+                ...g,
+                reception: {
+                  ...g.reception,
+                  checklist: {
+                    ...g.reception.checklist,
+                    [itemId]: true
+                  }
+                }
+              };
+            }
+            return g;
+          })
+        });
+      },
 
       nextPhase: () => {
         const { timePhase, guests, assets, day, resources } = get();
@@ -264,7 +288,8 @@ export const useGameStore = create<GameState>()(
       }
     }),
     {
-      name: 'rosemary-tavern-storage',
+      name: 'rosemary-tavern-storage-v2',
+      version: 1,
     }
   )
 );

@@ -10,8 +10,22 @@ import { AssetDetailView } from '../components/AssetDetailView';
 import { SettlementModal } from '../components/SettlementModal';
 import { AnimatePresence } from 'framer-motion';
 
+import { ReceptionView } from '../components/Reception/ReceptionView';
+
 export const Game: React.FC = () => {
   const { timePhase, latestReport, selectedEntity } = useGameStore();
+
+  if (timePhase === 'Morning') {
+    return (
+      <>
+        <ReceptionView />
+        {/* Modals */}
+        <AnimatePresence>
+          {latestReport && <SettlementModal report={latestReport} />}
+        </AnimatePresence>
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen w-screen bg-[color:var(--rt-bg)] text-[color:var(--rt-text)] font-sans overflow-hidden">
@@ -19,8 +33,7 @@ export const Game: React.FC = () => {
 
       <div className="flex flex-1 overflow-hidden bg-[color:var(--rt-surface-2)]">
         {/* Left Sidebar: Guests & Queue */}
-        <aside className="w-80 bg-[color:var(--rt-surface)] border-r border-[color:var(--rt-border)] flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_-10px_0_20px_rgba(0,0,0,0.5)] z-20">
-          {timePhase === 'Morning' && <QueuePanel />}
+        <aside className="w-80 bg-[color:var(--rt-surface)]/80 border-r border-[color:var(--rt-border)] flex flex-col p-4 space-y-4 overflow-y-auto custom-scrollbar shadow-[inset_-10px_0_20px_rgba(0,0,0,0.5)] z-20">
           <GuestList />
         </aside>
 
