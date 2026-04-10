@@ -9,6 +9,8 @@ import { GuestDetailView } from '../components/GuestDetailView';
 import { AssetDetailView } from '../components/AssetDetailView';
 import { SettlementModal } from '../components/SettlementModal';
 import { AnimatePresence } from 'framer-motion';
+import { LogBar } from '../components/LogBar';
+import { DaytimeActionPanel } from '../components/DaytimeActionPanel';
 
 import { ReceptionView } from '../components/Reception/ReceptionView';
 
@@ -17,13 +19,16 @@ export const Game: React.FC = () => {
 
   if (timePhase === 'Morning') {
     return (
-      <>
-        <ReceptionView />
-        {/* Modals */}
+      <div className="flex flex-col h-screen w-screen bg-[color:var(--rt-bg)] overflow-hidden">
+        <div className="flex-1 overflow-hidden">
+          <ReceptionView />
+        </div>
+        <LogBar />
+        
         <AnimatePresence>
           {latestReport && <SettlementModal report={latestReport} />}
         </AnimatePresence>
-      </>
+      </div>
     );
   }
 
@@ -42,6 +47,7 @@ export const Game: React.FC = () => {
           {selectedEntity === null && <TavernOverview />}
           {selectedEntity?.type === 'guest' && <GuestDetailView />}
           {selectedEntity?.type === 'asset' && <AssetDetailView />}
+          {timePhase === 'Day' && <DaytimeActionPanel />}
         </main>
 
         {/* Right Sidebar: Assets & Facilities */}
@@ -49,6 +55,8 @@ export const Game: React.FC = () => {
           <AssetsPanel />
         </aside>
       </div>
+
+      <LogBar />
 
       {/* Modals */}
       <AnimatePresence>

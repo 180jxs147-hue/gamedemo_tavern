@@ -1,15 +1,12 @@
 import React from 'react';
 import { Guest } from '../../types/game';
-import { useGameStore } from '../../store/gameStore';
-import { Map, ShieldCheck, Square, CheckSquare } from 'lucide-react';
-import { clsx } from 'clsx';
+import { Map } from 'lucide-react';
 
 interface Props {
   guest: Guest;
 }
 
 export const DocumentPanel: React.FC<Props> = ({ guest }) => {
-  const { checkReceptionItem } = useGameStore();
   const { reception } = guest;
 
   if (!reception) return null;
@@ -48,31 +45,8 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
           </div>
           <div className="flex justify-between">
             <span className="text-[#8c7a6b]">预计停留</span>
-            <span className="text-[#8c3f2b] font-bold">{guest.stayDuration} 天</span>
+            <span className="text-[#e6b36e] font-bold text-lg">{guest.stayDuration} 天</span>
           </div>
-        </div>
-      </div>
-
-      {/* Checklist */}
-      <div className="bg-[#e6d0a3] border-2 border-[#8c7a6b] text-[#3e2e25] rounded-sm p-4 h-[30%] shadow-[inset_0_0_20px_rgba(140,122,107,0.5)]">
-        <h3 className="text-center font-bold tracking-widest text-lg mb-4 pb-2 border-b border-[#8c7a6b]/50">检查清单</h3>
-        
-        <div className="flex flex-col gap-3 text-sm font-bold">
-          <CheckItem 
-            label="停留意向 确认" 
-            checked={reception.checklist.durationAssessed} 
-            onClick={() => checkReceptionItem(guest.id, 'durationAssessed')} 
-          />
-          <CheckItem 
-            label="偏好/癖好 探查" 
-            checked={reception.checklist.preferenceAssessed} 
-            onClick={() => checkReceptionItem(guest.id, 'preferenceAssessed')} 
-          />
-          <CheckItem 
-            label={guest.gender === 'Male' ? '特殊服务意向 评估' : '防备心/诱捕难度 评估'} 
-            checked={reception.checklist.targetAssessed} 
-            onClick={() => checkReceptionItem(guest.id, 'targetAssessed')} 
-          />
         </div>
       </div>
 
@@ -84,16 +58,3 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
     </div>
   );
 };
-
-const CheckItem = ({ label, checked, onClick }: { label: string, checked: boolean, onClick: () => void }) => (
-  <div 
-    className={clsx(
-      "flex items-center cursor-pointer transition-colors hover:text-[#8c3f2b]",
-      checked ? "text-[#8c3f2b]" : "text-[#543b2b]"
-    )}
-    onClick={onClick}
-  >
-    {checked ? <CheckSquare className="w-4 h-4 mr-3" /> : <Square className="w-4 h-4 mr-3" />}
-    <span className={clsx(checked && "line-through opacity-80")}>{label}</span>
-  </div>
-);

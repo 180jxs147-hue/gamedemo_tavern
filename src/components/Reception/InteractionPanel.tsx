@@ -20,7 +20,7 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
 
   useEffect(() => {
     if (chatHistory.length === 0 && reception) {
-      setChatHistory([{ sender: 'guest', text: "您好，我需要一间房间。" }]);
+      setChatHistory([{ sender: 'guest', text: reception.introText }]);
     }
   }, [guest.id, chatHistory.length, reception, setChatHistory]);
 
@@ -38,9 +38,6 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
         { sender: 'player', text: option.text },
         { sender: 'guest', text: option.response }
       ]);
-      if (option.checkItemId) {
-        checkReceptionItem(guest.id, option.checkItemId);
-      }
     }
   };
 
@@ -111,7 +108,7 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 className={clsx(
-                  "px-6 py-3 rounded-lg max-w-[80%] shadow-lg border border-[#543b2b]",
+                  "px-6 py-3 rounded-lg max-w-[80%] shadow-lg border border-[#543b2b] whitespace-pre-line",
                   chat.sender === 'guest' 
                     ? "bg-[#e6d0a3] text-[#3e2e25] self-start rounded-tl-none font-bold"
                     : "bg-[#241d1a] text-[#cbbba9] self-end rounded-tr-none text-sm"
@@ -124,22 +121,7 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
           <div ref={chatEndRef} />
         </div>
 
-        {/* Floating Item (Evidence/Loot) */}
-        {reception.itemVisible && (
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="absolute left-6 bottom-32 bg-[#1d1715]/90 border-2 border-[#543b2b] p-3 rounded shadow-2xl backdrop-blur-sm flex flex-col items-center w-32"
-          >
-            <span className="bg-[#120e0d] text-[#cbbba9] text-[10px] px-2 py-0.5 rounded-full -mt-5 mb-2 border border-[#3e2e25]">
-              战利品/随身物品
-            </span>
-            <div className="w-16 h-16 bg-[#2a2220] border border-[#543b2b] rounded flex items-center justify-center mb-2">
-              <img src="/assets/icons/status/gold.png" alt="item" className="w-10 h-10 opacity-70" />
-            </div>
-            <span className="text-xs text-[#e6b36e] font-bold text-center">{reception.itemVisible.name}</span>
-          </motion.div>
-        )}
+        {/* Floating Item Removed */}
       </div>
 
       {/* Bottom Action Bar */}

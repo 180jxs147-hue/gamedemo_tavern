@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
-import { IntelPanel } from './IntelPanel';
 import { InteractionPanel } from './InteractionPanel';
 import { DocumentPanel } from './DocumentPanel';
 
@@ -38,11 +37,6 @@ export const ReceptionView: React.FC = () => {
 
   return (
     <div className="flex w-full h-full bg-[#161211] text-[#d4c4b7] font-serif p-4 gap-4 overflow-hidden">
-      {/* Left Column: Intel & Encyclopedia */}
-      <div className="w-[300px] flex flex-col gap-4">
-        <IntelPanel guest={currentGuest} />
-      </div>
-
       {/* Center Column: Interaction (Dialog & Character) */}
       <div className="flex-1 flex flex-col rounded-md border-2 border-[#3e2e25] bg-[#1a1514] relative overflow-hidden shadow-[inset_0_0_40px_rgba(0,0,0,0.6)]">
         <InteractionPanel 
@@ -54,7 +48,7 @@ export const ReceptionView: React.FC = () => {
         />
       </div>
 
-      {/* Right Column: ID Document & Checklist */}
+      {/* Right Column: ID Document (Removed Checklist) */}
       <div className="w-[320px] flex flex-col gap-4">
         <DocumentPanel guest={currentGuest} />
       </div>

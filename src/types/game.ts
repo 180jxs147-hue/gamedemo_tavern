@@ -3,7 +3,24 @@ export type GuestRarity = 'N' | 'R' | 'SR' | 'SSR';
 export type Gender = 'Male' | 'Female';
 export type WealthTier = '贫穷' | '平民' | '富裕' | '贵族';
 
+
+export interface LogEntry {
+  id: string;
+  timestamp: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'danger';
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  desc: string;
+  quantity: number;
+  icon: string;
+}
+
 export interface DialogueOption {
+
   id: string;
   text: string;
   response: string;
@@ -17,23 +34,8 @@ export interface GuestReceptionData {
     profession: string;
     validity: string;
   };
-  itemVisible?: {
-    name: string;
-    desc: string;
-    icon: string;
-  };
+  introText: string; // 客人入住时的一大段陈述
   dialogues: DialogueOption[];
-  checklist: {
-    durationAssessed: boolean;
-    preferenceAssessed: boolean;
-    targetAssessed: boolean;
-  };
-  rumorText: string;
-  encyclopediaEntry: {
-    title: string;
-    desc: string;
-    image: string;
-  };
 }
 
 export interface GameResources {
