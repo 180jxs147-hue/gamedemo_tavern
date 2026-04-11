@@ -33,6 +33,7 @@ interface GameState {
   assignService: (maleId: string, assetId: string) => void;
   startGame: () => void;
   continueGame: () => void;
+  backToMenu: () => void;
   resetGame: () => void;
   
   // 交互选择状态
@@ -420,6 +421,10 @@ if (timePhase === 'LateNight') {
             return g;
           })
         });
+      },
+
+      backToMenu: () => {
+        set({ gameState: 'menu' });
       },
 
       resetGame: () => {

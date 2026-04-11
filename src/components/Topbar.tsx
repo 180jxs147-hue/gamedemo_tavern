@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Coins, Zap, ShieldAlert, Star, Package, Clock, Sun, Moon, MoonStar } from 'lucide-react';
+import { Coins, Zap, ShieldAlert, Star, Package, Clock, Sun, Moon, MoonStar, LogOut } from 'lucide-react';
 import { TimePhase } from '../types/game';
 import { clsx } from 'clsx';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,7 +25,7 @@ const PhaseLabel = ({ phase }: { phase: TimePhase }) => {
 };
 
 export const Topbar: React.FC = () => {
-  const {  day, timePhase, resources  } = useGameStore(useShallow(state => ({ day: state.day, timePhase: state.timePhase, resources: state.resources })));
+  const {  day, timePhase, resources, backToMenu  } = useGameStore(useShallow(state => ({ day: state.day, timePhase: state.timePhase, resources: state.resources, backToMenu: state.backToMenu })));
 
   return (
     <header className="bg-[color:var(--rt-surface)] border-b border-[color:var(--rt-border)] text-[color:var(--rt-text)] p-4 flex justify-between items-center shadow-lg shadow-black/50">
@@ -60,6 +60,14 @@ export const Topbar: React.FC = () => {
           <span className={clsx("font-bold", resources.alertLevel > 50 ? "text-[color:var(--rt-danger)]" : "text-[color:var(--rt-text)]")}>{resources.alertLevel}%</span>
         </div>
       </div>
+
+      <button 
+        onClick={backToMenu}
+        className="ml-6 px-4 py-2 bg-red-950/30 hover:bg-red-900/50 text-red-400 border border-red-900/50 rounded flex items-center transition-colors text-sm font-bold"
+      >
+        <LogOut className="w-4 h-4 mr-2" />
+        主菜单
+      </button>
     </header>
   );
 };
