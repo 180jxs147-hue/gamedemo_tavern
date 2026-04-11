@@ -19,14 +19,16 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
         
         <div className="aspect-[3/4] w-full border border-[#543b2b] bg-[#120e0d] relative overflow-hidden flex items-center justify-center rounded-sm">
           <img 
-            src={guest.gender === 'Male' ? '/assets/portraits/detailed_male.jpg' : '/assets/portraits/detailed_female.jpg'} 
+            src={guest.portrait} 
             alt="Portrait" 
-            className="w-full h-full object-cover mix-blend-luminosity opacity-80" 
+            className="w-full h-full object-cover opacity-90" 
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#120e0d] to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#120e0d] via-[#120e0d]/40 to-transparent opacity-80" />
           <div className="absolute bottom-2 text-center w-full">
-            <h4 className="font-bold text-[#e6b36e] text-lg">{reception.idCard.name}</h4>
-            <p className="text-xs text-[#a09081]">职业：{reception.idCard.profession}</p>
+            <h4 className="font-bold text-[#e6b36e] text-lg drop-shadow-md">{reception.idCard.name}</h4>
+            <p className="text-xs text-[#e6b36e] drop-shadow-md bg-black/40 inline-block px-2 py-0.5 rounded border border-[#543b2b]/50">
+              {guest.race} {reception.idCard.profession}
+            </p>
           </div>
         </div>
 
@@ -34,6 +36,10 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
           <div className="flex justify-between">
             <span className="text-[#8c7a6b]">性别</span>
             <span>{guest.gender === 'Male' ? '男性' : '女性'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[#8c7a6b]">种族</span>
+            <span className="text-[#e6b36e]">{guest.race}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-[#8c7a6b]">财力评估</span>

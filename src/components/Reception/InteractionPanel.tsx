@@ -71,12 +71,15 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-transparent to-[#161211]/80 pointer-events-none" />
         
-        <div className="absolute inset-x-0 bottom-[180px] h-[70%] flex justify-center items-end opacity-90">
-          <img 
-            src={guest.gender === 'Male' ? '/assets/portraits/detailed_male.jpg' : '/assets/portraits/detailed_female.jpg'}
-            alt="Character"
-            className="h-full object-contain drop-shadow-2xl"
-          />
+        <div className="absolute inset-x-0 bottom-32 h-[50vh] flex justify-center items-end opacity-90">
+          <div className="h-full aspect-square border-4 border-[#3e2e25] rounded-sm overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative">
+            <img 
+              src={guest.portrait}
+              alt="Character"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-transparent to-transparent opacity-80" />
+          </div>
         </div>
       </div>
 

@@ -37,9 +37,9 @@ export const AssetDetailView: React.FC = () => {
         <div className="bg-[#1d1715] border border-[#543b2b] rounded-sm overflow-hidden shadow-lg">
           <div className="h-40 relative">
             <img 
-              src="/assets/portraits/detailed_female.jpg" 
+              src={asset.portrait} 
               alt={asset.name}
-              className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
+              className="w-full h-full object-cover opacity-80"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1d1715] to-transparent" />
             <div className="absolute bottom-3 left-4">
@@ -47,6 +47,9 @@ export const AssetDetailView: React.FC = () => {
               <div className="flex gap-2 mt-1">
                 <span className={clsx("px-2 py-0.5 text-xs border rounded-sm font-bold border-current", getRarityColor(asset.rarity))}>
                   {asset.rarity}
+                </span>
+                <span className="px-2 py-0.5 text-xs bg-black/50 border border-zinc-700/50 text-[#a09081] rounded-sm">
+                  {asset.race}
                 </span>
                 <span className="px-2 py-0.5 text-xs bg-black/50 border border-zinc-700/50 text-[#a09081] rounded-sm">
                   {asset.traits.join(' / ')}

@@ -35,9 +35,9 @@ export const GuestList: React.FC = () => {
                 {/* Avatar */}
                 <div className="w-12 h-12 rounded border border-[#543b2b] overflow-hidden shrink-0 bg-[#120e0d]">
                   <img 
-                    src={guest.gender === 'Male' ? '/assets/portraits/silhouette_male.jpg' : '/assets/portraits/silhouette_female.jpg'} 
+                    src={guest.portrait} 
                     alt={guest.name}
-                    className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all"
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all"
                   />
                 </div>
 
@@ -50,7 +50,7 @@ export const GuestList: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex justify-between items-center mt-2 text-xs">
-                    <span className="text-[#a09081]">{guest.gender === 'Male' ? '男性' : '女性'}</span>
+                    <span className="text-[#a09081]">{guest.race} {guest.gender === 'Male' ? '男' : '女'}</span>
                     <span className="text-[#8c7a6b]">{guest.wealthTier}</span>
                     <span className="text-[#cbbba9] bg-[#2a2220] px-1.5 py-0.5 rounded border border-[#3e2e25]">
                       停留 {guest.stayDuration - guest.daysStayed} 天

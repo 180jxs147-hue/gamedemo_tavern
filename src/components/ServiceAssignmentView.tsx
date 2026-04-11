@@ -114,11 +114,11 @@ export const ServiceAssignmentView: React.FC<Props> = ({ onClose }) => {
                     {/* Large Portrait */}
                     <div className="aspect-[3/4] w-full relative bg-[#120e0d]">
                       <img 
-                        src="/assets/portraits/detailed_female.jpg" 
+                        src={asset.portrait} 
                         alt={asset.name}
                         className={clsx(
                           "w-full h-full object-cover transition-all duration-500",
-                          isAssignedToOther ? "opacity-30 grayscale" : "opacity-80 mix-blend-luminosity"
+                          isAssignedToOther ? "opacity-30 grayscale" : "opacity-80"
                         )}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-[#161211]/40 to-transparent" />

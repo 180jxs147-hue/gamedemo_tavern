@@ -1,9 +1,28 @@
-import { GuestRarity, MaleGuest, FemaleGuest, Gender, GuestReceptionData, WealthTier } from '../types/game';
+import { GuestRarity, MaleGuest, FemaleGuest, Gender, GuestReceptionData, WealthTier, Race } from '../types/game';
 
 const MALE_NAMES = ['亚瑟', '博雷尔', '卡伦', '德莱斯特', '伊利安', '法尔克', '吉迪恩', '哈德良', '伊戈尔', '乔林', '凯尔', '卢锡安', '莫迪凯', '尼文', '奥里昂', '佩林', '奎恩', '罗温', '塞拉斯', '索恩', '乌里安', '瓦莱里乌斯', '威斯坦', '桑德', '约里克', '赞恩'];
 const FEMALE_NAMES = ['艾莉亚', '贝娅特丽克丝', '卡西娅', '黛莉亚', '埃拉', '菲奥娜', '吉内薇拉', '海伦娜', '伊索尔德', '朱诺', '基拉', '莉维亚', '摩根娜', '妮娅', '奥菲莉亚', '佩特拉', '奇亚娜', '蕾亚', '塞拉菲娜', '塔莉亚', '乌苏拉', '维斯帕', '雷恩', '塞妮娅', '伊万', '扎拉'];
 
 const SHARED_TRAITS = ['受虐狂', '淫荡', '保守', '贪婪', '傲慢', '胆怯', '虚荣', '孤僻', '温柔', '狂野', '顺从', '高冷', '娇小', '丰满'];
+
+const RACES: Race[] = ['人类', '精灵', '兽人', '矮人', '魔族'];
+
+const MALE_PORTRAITS: Record<Race, string> = {
+  '人类': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20handsome%20male%20human%20adventurer%2C%20pixel%20art%20style%20portrait%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '精灵': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20handsome%20male%20elf%20ranger%2C%20pixel%20art%20style%20portrait%2C%20hooded%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '兽人': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20strong%20male%20beastkin%20warrior%2C%20pixel%20art%20style%20portrait%2C%20muscular%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '矮人': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20stout%20male%20dwarf%20blacksmith%2C%20pixel%20art%20style%20portrait%2C%20beard%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '魔族': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20handsome%20male%20demon%20warlock%2C%20pixel%20art%20style%20portrait%2C%20glowing%20eyes%2C%20horns%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square'
+};
+
+const FEMALE_PORTRAITS: Record<Race, string> = {
+  '人类': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20beautiful%20female%20human%20mage%2C%20pixel%20art%20style%20portrait%2C%20purple%20robe%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '精灵': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20beautiful%20female%20elf%20archer%2C%20pixel%20art%20style%20portrait%2C%20green%20hair%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '兽人': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20cute%20female%20beastkin%20thief%2C%20pixel%20art%20style%20portrait%2C%20cat%20ears%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '矮人': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20beautiful%20female%20dwarf%20cleric%2C%20pixel%20art%20style%20portrait%2C%20blonde%20hair%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square',
+  '魔族': 'https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20beautiful%20female%20demon%20succubus%2C%20pixel%20art%20style%20portrait%2C%20red%20horns%2C%20RPG%20game%20avatar%2C%20medieval%20fantasy%2C%20high%20quality&image_size=square'
+};
+
 const MALE_SPECIFIC_TRAITS = ['粗暴', '多金', '吝啬', '急躁', '变态', '温文尔雅'];
 
 const randomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -97,11 +116,15 @@ export const generateMaleGuest = (rarity: GuestRarity): MaleGuest => {
   const traits = randomItems(MALE_SPECIFIC_TRAITS, randomInt(1, 2));
   const stayDuration = randomInt(1, 5);
   const wealthTier = getWealthTier(rarity);
+  const race = randomItem(RACES);
+  const portrait = MALE_PORTRAITS[race];
   
   return {
     id: generateId(),
     name,
     gender: 'Male',
+    race,
+    portrait,
     rarity,
     wealthTier,
     stayDuration,
@@ -123,11 +146,15 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
   const traits = randomItems(SHARED_TRAITS, randomInt(2, 4));
   const stayDuration = randomInt(1, 5);
   const wealthTier = getWealthTier(rarity);
+  const race = randomItem(RACES);
+  const portrait = FEMALE_PORTRAITS[race];
   
   return {
     id: generateId(),
     name,
     gender: 'Female',
+    race,
+    portrait,
     rarity,
     wealthTier,
     stayDuration,

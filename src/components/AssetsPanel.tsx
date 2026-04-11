@@ -44,15 +44,20 @@ export const AssetsPanel: React.FC = () => {
                     <h3 className={clsx("font-serif font-bold transition-colors", isSelected ? "text-[color:var(--rt-accent)]" : "text-[color:var(--rt-text)] group-hover:text-[color:var(--rt-accent)]")}>
                       {asset.name}
                     </h3>
-                    <span className="text-[10px] bg-black/40 px-1 border border-[color:var(--rt-border)] rounded-sm text-[color:var(--rt-muted)] mt-1 inline-block">
-                      {asset.rarity}
-                    </span>
+                    <div className="flex gap-1 mt-1">
+                      <span className="text-[10px] bg-black/40 px-1 border border-[color:var(--rt-border)] rounded-sm text-[color:var(--rt-muted)] inline-block">
+                        {asset.rarity}
+                      </span>
+                      <span className="text-[10px] bg-black/40 px-1 border border-[color:var(--rt-border)] rounded-sm text-[#e6b36e] inline-block">
+                        {asset.race}
+                      </span>
+                    </div>
                   </div>
                   <div className="w-10 h-10 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] rounded-sm overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(202,163,93,0.12)]">
                     <img 
-                      src="/assets/portraits/silhouette_asset.jpg"
-                      alt="portrait" 
-                      className="w-full h-full object-cover opacity-85"
+                      src={asset.portrait}
+                      alt={asset.name}
+                      className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all"
                     />
                   </div>
                 </div>

@@ -2,6 +2,7 @@ export type TimePhase = 'Morning' | 'Day' | 'Night' | 'LateNight';
 export type GuestRarity = '普通' | '稀有' | '史诗' | '传说';
 export type Gender = 'Male' | 'Female';
 export type WealthTier = '贫穷' | '平民' | '富裕' | '贵族';
+export type Race = '人类' | '精灵' | '兽人' | '矮人' | '魔族';
 
 
 export interface LogEntry {
@@ -51,6 +52,8 @@ export interface BaseGuest {
   id: string;
   name: string;
   gender: Gender;
+  race: Race; // 新增：种族
+  portrait: string; // 新增：专属立绘URL
   rarity: GuestRarity;
   wealthTier: WealthTier;
   stayDuration: number;

@@ -46,7 +46,7 @@ export const QueuePanel: React.FC = () => {
               <div>
                 <h3 className="font-serif font-bold text-lg text-[color:var(--rt-text)]">{queue[0].name}</h3>
                 <p className="text-xs text-[color:var(--rt-muted)] mt-1 flex items-center space-x-2">
-                  <span>{queue[0].gender === 'Male' ? '男性' : '女性'}</span>
+                  <span>{queue[0].race} {queue[0].gender === 'Male' ? '男性' : '女性'} · 停留 {queue[0].stayDuration} 天</span>
                   <span>•</span>
                   <span className={clsx("font-bold border px-1.5 rounded-sm", RarityColor(queue[0].rarity))}>
                     {queue[0].rarity}
@@ -55,9 +55,9 @@ export const QueuePanel: React.FC = () => {
               </div>
               <div className="w-10 h-10 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] rounded-sm overflow-hidden flex items-center justify-center">
                 <img 
-                  src={queue[0].gender === 'Male' ? '/assets/portraits/silhouette_male.jpg' : '/assets/portraits/silhouette_female.jpg'}
+                  src={queue[0].portrait}
                   alt="portrait" 
-                  className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
+                  className="w-full h-full object-cover opacity-80"
                 />
               </div>
             </div>

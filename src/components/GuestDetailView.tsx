@@ -62,7 +62,7 @@ export const GuestDetailView: React.FC = () => {
         <div className="w-1/3 flex flex-col space-y-6">
           <div className="aspect-[3/4] rounded-sm border-2 border-[color:var(--rt-border-strong)] overflow-hidden relative bg-[color:var(--rt-bg)] shadow-2xl">
             <img
-              src={isMale ? '/assets/portraits/detailed_male.jpg' : '/assets/portraits/detailed_female.jpg'}
+              src={guest.portrait}
               alt="portrait"
               className="w-full h-full object-cover opacity-85"
             />
@@ -71,12 +71,12 @@ export const GuestDetailView: React.FC = () => {
               <h3 className="text-3xl font-serif font-bold text-[color:var(--rt-accent)] drop-shadow-md tracking-wider">
                 {guest.name}
               </h3>
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center justify-between mt-2 gap-2">
                 <span className={clsx("px-2 py-1 rounded-sm text-xs font-bold border border-current", getRarityColor(guest.rarity))}>
                   稀有度 {guest.rarity}
                 </span>
                 <span className="text-xs text-[color:var(--rt-muted)] bg-black/50 px-2 py-1 rounded-sm border border-zinc-700/50">
-                  {isMale ? '男性' : '女性'}
+                  {guest.race} {isMale ? '男性' : '女性'}
                 </span>
               </div>
             </div>
