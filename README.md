@@ -1,57 +1,59 @@
-# React + TypeScript + Vite
+# 迷迭香酒馆 (Rosemary Tavern)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+这是一款基于 React + TypeScript + Tailwind CSS + Zustand 开发的暗黑奇幻风模拟经营游戏。
 
-Currently, two official plugins are available:
+玩家在游戏中扮演“迷迭香酒馆”的老板，在不同的时间阶段（早晨、日间、夜间、深夜）进行接待客人、酒馆建设、科研购买、情报打探、资产诱捕以及特殊服务安排，以此赚取暴利并不断扩张酒馆的地下势力。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 游戏核心特色
+- **四段式时间循环**：严格划分早晨接待、日间经营（建设/科研/黑市/调教）、夜间行动（武力/魅惑/炼金捕获、安排特殊服务）、深夜结算。
+- **丰富的种族与生成器**：内置多维度的客人生成器，客人拥有人类、精灵、兽人、魔族、矮人等种族，并自动生成高质量的像素风专属立绘。
+- **深度的“特殊服务”匹配机制**：男客具有多样的“性癖”标签，而被捕获的女奴（资产）具有对应的“性格特点”与“四维熟练度（口、乳、阴、菊）”。根据匹配程度计算满意度与最终收益。
+- **沉浸式 UI 设计**：采用复古羊皮纸、暗黑木纹、像素风以及荧光标签匹配特效，搭配完整的系统日志输出，犹如跑团（DND）般的体验。
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 如何在本地运行
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+本项目是一个标准的 Vite React 前端应用，没有任何复杂的后端依赖，您可以非常轻松地在本地电脑上运行它。
+
+### 环境要求
+请确保您的电脑上已经安装了 [Node.js](https://nodejs.org/) (建议版本 18.x 或以上)。
+安装 Node.js 后，您将自动获得 `npm` (Node Package Manager)。
+
+### 步骤 1：下载或克隆项目
+将整个项目文件夹下载到您的本地电脑上，并解压。
+
+### 步骤 2：打开终端
+在解压后的项目根目录（即包含 `package.json` 的那个文件夹）下，打开您的命令行终端 (Terminal / PowerShell / CMD)。
+
+### 步骤 3：安装依赖包
+在终端中输入以下命令并回车，等待所有依赖包下载完成：
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 步骤 4：启动本地开发服务器
+依赖安装完成后，输入以下命令启动游戏：
+```bash
+npm run dev
 ```
+
+### 步骤 5：开始游戏
+命令执行成功后，终端会输出类似如下的信息：
+```text
+  VITE v6.x.x  ready in xxx ms
+
+  ➜  Local:   http://localhost:5173/
+```
+在您的浏览器中访问提示的本地地址（通常是 `http://localhost:5173/`），即可看到游戏的主菜单，点击“新游戏”开始您的暗黑酒馆经营之旅！
+
+---
+
+## 技术栈说明
+- **框架**: React 18
+- **构建工具**: Vite
+- **语言**: TypeScript
+- **样式**: Tailwind CSS
+- **状态管理**: Zustand (含 LocalStorage 持久化，刷新页面不会丢失进度)
+- **图标**: Lucide React
+- **动画**: Framer Motion
