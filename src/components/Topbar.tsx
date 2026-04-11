@@ -3,6 +3,8 @@ import { useGameStore } from '../store/gameStore';
 import { Coins, Zap, ShieldAlert, Star, Package, Clock, Sun, Moon, MoonStar } from 'lucide-react';
 import { TimePhase } from '../types/game';
 import { clsx } from 'clsx';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const PhaseIcon = ({ phase }: { phase: TimePhase }) => {
   switch (phase) {
@@ -23,7 +25,7 @@ const PhaseLabel = ({ phase }: { phase: TimePhase }) => {
 };
 
 export const Topbar: React.FC = () => {
-  const { day, timePhase, resources } = useGameStore();
+  const {  day, timePhase, resources  } = useGameStore(useShallow(state => ({ day: state.day, timePhase: state.timePhase, resources: state.resources })));
 
   return (
     <header className="bg-[color:var(--rt-surface)] border-b border-[color:var(--rt-border)] text-[color:var(--rt-text)] p-4 flex justify-between items-center shadow-lg shadow-black/50">

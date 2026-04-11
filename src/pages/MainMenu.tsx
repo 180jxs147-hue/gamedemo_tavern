@@ -1,9 +1,11 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const MainMenu: React.FC = () => {
-  const { startGame, continueGame, day } = useGameStore();
+  const {  startGame, continueGame, day  } = useGameStore(useShallow(state => ({ startGame: state.startGame, continueGame: state.continueGame, day: state.day })));
 
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen bg-[#161211] text-[#e6b36e] font-serif relative overflow-hidden">
@@ -13,7 +15,7 @@ export const MainMenu: React.FC = () => {
           src="/assets/backgrounds/tavern_night.jpg" 
           alt="Tavern Background" 
           className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
-        />
+         loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-[#161211]/80 to-transparent" />
       </div>
 

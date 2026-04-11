@@ -22,7 +22,7 @@ export const DocumentPanel: React.FC<Props> = ({ guest }) => {
             src={guest.portrait} 
             alt="Portrait" 
             className="w-full h-full object-cover opacity-90" 
-          />
+           loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#120e0d] via-[#120e0d]/40 to-transparent opacity-80" />
           <div className="absolute bottom-2 text-center w-full">
             <h4 className="font-bold text-[#e6b36e] text-lg drop-shadow-md">{reception.idCard.name}</h4>

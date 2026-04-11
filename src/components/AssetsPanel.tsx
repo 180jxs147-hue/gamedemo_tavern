@@ -2,9 +2,11 @@ import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Heart, Activity, Gem, BookOpen } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const AssetsPanel: React.FC = () => {
-  const { assets, trainAsset, resources, selectedEntity, setSelectedEntity } = useGameStore();
+  const {  assets, trainAsset, resources, selectedEntity, setSelectedEntity  } = useGameStore(useShallow(state => ({ assets: state.assets, trainAsset: state.trainAsset, resources: state.resources, selectedEntity: state.selectedEntity, setSelectedEntity: state.setSelectedEntity })));
 
 
   return (
@@ -58,7 +60,7 @@ export const AssetsPanel: React.FC = () => {
                       src={asset.portrait}
                       alt={asset.name}
                       className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all"
-                    />
+                     loading="lazy" />
                   </div>
                 </div>
 

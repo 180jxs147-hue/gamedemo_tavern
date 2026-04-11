@@ -14,9 +14,11 @@ import { DaytimeActionPanel } from '../components/DaytimeActionPanel';
 import { ServiceAssignmentView } from '../components/ServiceAssignmentView';
 import { ReceptionView } from '../components/Reception/ReceptionView';
 import { LateNightView } from '../components/LateNightView';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const Game: React.FC = () => {
-  const { timePhase, latestReport, selectedEntity } = useGameStore();
+  const {  timePhase, latestReport, selectedEntity  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase, latestReport: state.latestReport, selectedEntity: state.selectedEntity })));
   const [showServiceView, setShowServiceView] = React.useState(false);
 
   if (timePhase === 'Morning') {

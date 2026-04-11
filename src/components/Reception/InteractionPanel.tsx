@@ -14,9 +14,11 @@ interface Props {
 }
 
 import { getRarityColor } from '../../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, setChatHistory, onNextGuest }) => {
-  const { acceptGuest, rejectGuest, checkReceptionItem, queue } = useGameStore();
+  const {  acceptGuest, rejectGuest, checkReceptionItem, queue  } = useGameStore(useShallow(state => ({ acceptGuest: state.acceptGuest, rejectGuest: state.rejectGuest, checkReceptionItem: state.checkReceptionItem, queue: state.queue })));
   const { reception } = guest;
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +70,7 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
           src="/assets/backgrounds/tavern_day.jpg" 
           alt="Tavern" 
           className="w-full h-full object-cover opacity-20 pointer-events-none"
-        />
+         loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-transparent to-[#161211]/80 pointer-events-none" />
         
         <div className="absolute inset-x-0 bottom-32 h-[50vh] flex justify-center items-end opacity-90">
@@ -77,7 +79,7 @@ export const InteractionPanel: React.FC<Props> = ({ guest, day, chatHistory, set
               src={guest.portrait}
               alt="Character"
               className="w-full h-full object-cover"
-            />
+             loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-transparent to-transparent opacity-80" />
           </div>
         </div>

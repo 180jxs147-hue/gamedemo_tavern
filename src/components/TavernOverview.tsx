@@ -3,9 +3,11 @@ import { useGameStore } from '../store/gameStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const TavernOverview: React.FC = () => {
-  const { timePhase, nextPhase } = useGameStore();
+  const {  timePhase, nextPhase  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase, nextPhase: state.nextPhase })));
 
   const bgImage = timePhase === 'Morning' || timePhase === 'Day'
     ? '/assets/backgrounds/tavern_day.jpg'

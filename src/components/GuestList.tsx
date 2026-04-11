@@ -3,9 +3,11 @@ import { useGameStore } from '../store/gameStore';
 import { Users } from 'lucide-react';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const GuestList: React.FC = () => {
-  const { guests, setSelectedEntity } = useGameStore();
+  const {  guests, setSelectedEntity  } = useGameStore(useShallow(state => ({ guests: state.guests, setSelectedEntity: state.setSelectedEntity })));
 
   return (
     <div className="flex flex-col h-full bg-[#1d1715] border-2 border-[#543b2b] rounded shadow-lg overflow-hidden font-serif">
@@ -38,7 +40,7 @@ export const GuestList: React.FC = () => {
                     src={guest.portrait} 
                     alt={guest.name}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all"
-                  />
+                   loading="lazy" />
                 </div>
 
                 {/* Info */}

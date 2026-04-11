@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { InteractionPanel } from './InteractionPanel';
 import { DocumentPanel } from './DocumentPanel';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const ReceptionView: React.FC = () => {
-  const { queue, day, nextPhase } = useGameStore();
+  const {  queue, day, nextPhase  } = useGameStore(useShallow(state => ({ queue: state.queue, day: state.day, nextPhase: state.nextPhase })));
   const currentGuest = queue[0];
 
   // We handle chat history here so it resets when guest changes

@@ -5,6 +5,8 @@ import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff } from 'luci
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 interface GuestModalProps {
   guest: Guest;
@@ -12,7 +14,7 @@ interface GuestModalProps {
 }
 
 export const GuestModal: React.FC<GuestModalProps> = ({ guest, onClose }) => {
-  const { resources, timePhase, investigate, capture, assignService, assets } = useGameStore();
+  const {  resources, timePhase, investigate, capture, assignService, assets  } = useGameStore(useShallow(state => ({ resources: state.resources, timePhase: state.timePhase, investigate: state.investigate, capture: state.capture, assignService: state.assignService, assets: state.assets })));
   const [showAssign, setShowAssign] = useState(false);
 
   const isMale = guest.gender === 'Male';
@@ -64,7 +66,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({ guest, onClose }) => {
               src={`https://coreva-normal.trae.ai/api/ide/v1/text_to_image?prompt=elegant%20dark%20fantasy%20portrait%20${guest.gender}%20${guest.rarity}%20guest%20detailed&image_size=portrait_4_3`}
               alt="portrait"
               className="w-full h-full object-cover opacity-80 mix-blend-luminosity"
-            />
+             loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
             <div className="absolute bottom-2 left-2 text-xl font-serif font-bold text-amber-500 drop-shadow-md">
               {guest.name}

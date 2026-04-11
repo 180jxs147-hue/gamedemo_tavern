@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Hammer, FlaskConical, Store, PackageOpen, X, Coins } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const DaytimeActionPanel: React.FC = () => {
-  const { timePhase, inventory, upgrades, researches, shopItems, resources, buyUpgrade, buyResearch, buyShopItem } = useGameStore();
+  const {  timePhase, inventory, upgrades, researches, shopItems, resources, buyUpgrade, buyResearch, buyShopItem  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase, inventory: state.inventory, upgrades: state.upgrades, researches: state.researches, shopItems: state.shopItems, resources: state.resources, buyUpgrade: state.buyUpgrade, buyResearch: state.buyResearch, buyShopItem: state.buyShopItem })));
   const [activeModal, setActiveModal] = useState<'build' | 'research' | 'shop' | 'inventory' | null>(null);
 
   if (timePhase !== 'Day') return null;
@@ -88,7 +90,7 @@ const ShopModal = ({ onClose, items, gold, onBuy }: any) => (
       {items.map((item: any) => (
         <div key={item.id} className="border border-[#543b2b] bg-[#1d1715] p-4 rounded flex items-center gap-4">
           <div className="w-12 h-12 bg-[#120e0d] border border-[#3e2e25] flex items-center justify-center rounded shrink-0">
-            <img src={item.icon} alt={item.name} className="w-8 h-8" />
+            <img src={item.icon} alt={item.name} className="w-8 h-8"  loading="lazy" />
           </div>
           <div className="flex-1">
             <h3 className="text-[#e6b36e] font-bold">{item.name}</h3>
@@ -160,7 +162,7 @@ const InventoryModal = ({ onClose, inventory }: { onClose: () => void, inventory
               {inventory.map(item => (
                 <div key={item.id} className="border border-[#543b2b] bg-[#1d1715] rounded p-2 flex flex-col items-center gap-2">
                   <div className="w-12 h-12 bg-[#120e0d] border border-[#3e2e25] flex items-center justify-center">
-                    <img src={item.icon} alt={item.name} className="w-8 h-8" />
+                    <img src={item.icon} alt={item.name} className="w-8 h-8"  loading="lazy" />
                   </div>
                   <span className="text-[#e6b36e] text-sm font-bold text-center">{item.name}</span>
                   <span className="text-[#a09081] text-xs">x {item.quantity}</span>

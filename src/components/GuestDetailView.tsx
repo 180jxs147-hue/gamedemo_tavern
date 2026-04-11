@@ -5,9 +5,11 @@ import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff, Coins, Hear
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const GuestDetailView: React.FC = () => {
-  const { selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, capture, assignService, assets } = useGameStore();
+  const {  selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, capture, assignService, assets  } = useGameStore(useShallow(state => ({ selectedEntity: state.selectedEntity, setSelectedEntity: state.setSelectedEntity, guests: state.guests, resources: state.resources, timePhase: state.timePhase, investigate: state.investigate, capture: state.capture, assignService: state.assignService, assets: state.assets })));
   const [showAssign, setShowAssign] = useState(false);
 
   if (!selectedEntity || selectedEntity.type !== 'guest') return null;
@@ -65,7 +67,7 @@ export const GuestDetailView: React.FC = () => {
               src={guest.portrait}
               alt="portrait"
               className="w-full h-full object-cover opacity-85"
-            />
+             loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--rt-bg)]/90 via-[color:var(--rt-bg)]/30 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
               <h3 className="text-3xl font-serif font-bold text-[color:var(--rt-accent)] drop-shadow-md tracking-wider">

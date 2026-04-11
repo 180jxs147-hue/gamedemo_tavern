@@ -1,6 +1,8 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const getSceneImage = (phase: string) => {
   if (phase === 'Morning' || phase === 'Day') {
@@ -11,7 +13,7 @@ const getSceneImage = (phase: string) => {
 };
 
 export const MainScene: React.FC = () => {
-  const { timePhase } = useGameStore();
+  const {  timePhase  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase })));
 
   return (
     <div className="relative flex-1 overflow-hidden flex items-center justify-center bg-black">

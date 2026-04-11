@@ -5,9 +5,11 @@ import { FemaleGuest } from '../types/game';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const AssetDetailView: React.FC = () => {
-  const { selectedEntity, assets, setSelectedEntity, trainAsset, resources, timePhase } = useGameStore();
+  const {  selectedEntity, assets, setSelectedEntity, trainAsset, resources, timePhase  } = useGameStore(useShallow(state => ({ selectedEntity: state.selectedEntity, assets: state.assets, setSelectedEntity: state.setSelectedEntity, trainAsset: state.trainAsset, resources: state.resources, timePhase: state.timePhase })));
 
   if (selectedEntity?.type !== 'asset') return null;
 
@@ -40,7 +42,7 @@ export const AssetDetailView: React.FC = () => {
               src={asset.portrait} 
               alt={asset.name}
               className="w-full h-full object-cover opacity-80"
-            />
+             loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1d1715] to-transparent" />
             <div className="absolute bottom-3 left-4">
               <h3 className="text-2xl font-bold text-[#e6b36e]">{asset.name}</h3>

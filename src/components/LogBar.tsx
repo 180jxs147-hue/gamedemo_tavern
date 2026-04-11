@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { clsx } from 'clsx';
 import { Terminal } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
+
 
 export const LogBar: React.FC = () => {
-  const { logs } = useGameStore();
+  const {  logs  } = useGameStore(useShallow(state => ({ logs: state.logs })));
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

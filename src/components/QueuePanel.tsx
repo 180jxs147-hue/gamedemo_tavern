@@ -5,6 +5,8 @@ import { clsx } from 'clsx';
 
 import type { GuestRarity } from '../types/game';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 const RarityColor = (rarity: GuestRarity) => {
   return getRarityColor(rarity);
@@ -19,7 +21,7 @@ const RarityBadge = ({ rarity }: { rarity: string }) => {
 };
 
 export const QueuePanel: React.FC = () => {
-  const { queue, guests, acceptGuest, rejectGuest } = useGameStore();
+  const {  queue, guests, acceptGuest, rejectGuest  } = useGameStore(useShallow(state => ({ queue: state.queue, guests: state.guests, acceptGuest: state.acceptGuest, rejectGuest: state.rejectGuest })));
   const capacity = 3; // TODO: dynamically from facilities
 
   return (
@@ -58,7 +60,7 @@ export const QueuePanel: React.FC = () => {
                   src={queue[0].portrait}
                   alt="portrait" 
                   className="w-full h-full object-cover opacity-80"
-                />
+                 loading="lazy" />
               </div>
             </div>
 

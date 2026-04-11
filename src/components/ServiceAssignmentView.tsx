@@ -5,13 +5,15 @@ import { motion } from 'framer-motion';
 import { Heart, X, CheckCircle, Search } from 'lucide-react';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { useShallow } from 'zustand/react/shallow';
+
 
 interface Props {
   onClose: () => void;
 }
 
 export const ServiceAssignmentView: React.FC<Props> = ({ onClose }) => {
-  const { guests, assets, assignService } = useGameStore();
+  const {  guests, assets, assignService  } = useGameStore(useShallow(state => ({ guests: state.guests, assets: state.assets, assignService: state.assignService })));
   const maleGuests = guests.filter(g => g.gender === 'Male') as MaleGuest[];
   
   const [selectedMaleId, setSelectedMaleId] = useState<string | null>(maleGuests[0]?.id || null);
@@ -120,7 +122,7 @@ export const ServiceAssignmentView: React.FC<Props> = ({ onClose }) => {
                           "w-full h-full object-cover transition-all duration-500",
                           isAssignedToOther ? "opacity-30 grayscale" : "opacity-80"
                         )}
-                      />
+                       loading="lazy" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#161211] via-[#161211]/40 to-transparent" />
                       
                       {/* Traits Tags (Glowing logic) */}
