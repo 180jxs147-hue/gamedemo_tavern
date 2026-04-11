@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { GameResources, TimePhase, MaleGuest, FemaleGuest, Guest, SettlementReport, Facility, LogEntry, InventoryItem, TavernUpgrade, ResearchItem, ShopItem } from '../types/game';
-import { generateDailyQueue } from '../utils/generators';
+import { generateDailyQueue, generateFemaleGuest } from '../utils/generators';
 
 interface GameState {
   gameState: 'menu' | 'playing';
@@ -383,19 +383,31 @@ if (timePhase === 'LateNight') {
       },
 
       startGame: () => {
+        const initialAsset = generateFemaleGuest('普通');
+        const assetObj = {
+          ...initialAsset,
+          status: 'Captured' as const,
+          obedience: 50,
+          charm: 30,
+          skills: { mouth: 10, breast: 10, vagina: 10, anal: 0 }
+        };
+
         set({
           gameState: 'playing',
           day: 1,
           timePhase: 'Morning',
           resources: { ...INITIAL_RESOURCES },
-          logs: [{ id: 'init', timestamp: new Date().toLocaleTimeString(), message: '新的经营开始了。', type: 'info' }],
+          logs: [
+            { id: 'init1', timestamp: new Date().toLocaleTimeString(), message: '新的经营开始了。', type: 'info' },
+            { id: 'init2', timestamp: new Date().toLocaleTimeString(), message: `【初始资产】你带来了一名名叫 [${initialAsset.name}] 的普通女奴。`, type: 'success' }
+          ],
           inventory: [],
           upgrades: JSON.parse(JSON.stringify(INITIAL_UPGRADES)),
           researches: JSON.parse(JSON.stringify(INITIAL_RESEARCHES)),
           shopItems: JSON.parse(JSON.stringify(INITIAL_SHOP_ITEMS)),
           queue: generateDailyQueue(10, MAX_GUESTS),
           guests: [],
-          assets: [],
+          assets: [assetObj],
           facilities: [],
           latestReport: null,
           selectedEntity: null

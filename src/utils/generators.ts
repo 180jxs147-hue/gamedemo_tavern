@@ -34,10 +34,10 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 
 const getStatRange = (rarity: GuestRarity) => {
   switch (rarity) {
-    case '普通': return { min: 10, max: 30 };
-    case '稀有': return { min: 30, max: 50 };
-    case '史诗': return { min: 50, max: 80 };
-    case '传说': return { min: 80, max: 100 };
+    case '普通': return { min: 5, max: 15 };
+    case '稀有': return { min: 15, max: 30 };
+    case '史诗': return { min: 30, max: 50 };
+    case '传说': return { min: 50, max: 70 };
   }
 };
 
