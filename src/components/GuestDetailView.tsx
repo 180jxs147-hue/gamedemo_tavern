@@ -83,21 +83,19 @@ export const GuestDetailView: React.FC = () => {
           </div>
 
           <div className="bg-[color:var(--rt-surface)] border border-[color:var(--rt-border)] p-4 rounded-sm">
-            {!guest.isInvestigated ? (
-              <button
-                onClick={handleInvestigate}
-                disabled={resources.ap < 1}
-                className="w-full py-3 bg-[color:var(--rt-surface-2)] hover:bg-black/40 text-[color:var(--rt-accent)] border border-[color:var(--rt-border-strong)] rounded-sm flex items-center justify-center transition-colors disabled:opacity-50 font-bold"
-              >
-                <Search className="w-5 h-5 mr-2" />
-                调查隐藏情报 (-1 AP)
-              </button>
-            ) : (
-              <div className="w-full py-3 bg-black/20 text-[color:var(--rt-muted)] border border-[color:var(--rt-border)] rounded-sm flex items-center justify-center text-sm font-bold tracking-widest">
-                <Eye className="w-5 h-5 mr-2" />
-                情报已完全揭露
-              </div>
-            )}
+            <button
+              onClick={handleInvestigate}
+              disabled={resources.ap < 1 || guest.isInvestigated || timePhase !== 'Day'}
+              className={clsx(
+                "w-full py-2.5 rounded-sm font-bold transition-all flex items-center justify-center border",
+                timePhase === 'Day' && !guest.isInvestigated && resources.ap >= 1
+                  ? "bg-[color:var(--rt-surface)] hover:bg-black/40 text-[color:var(--rt-accent)] border-[color:var(--rt-border-strong)]"
+                  : "bg-zinc-900 text-zinc-600 border-zinc-800 cursor-not-allowed"
+              )}
+            >
+              <Search className="w-4 h-4 mr-2" />
+              {timePhase !== 'Day' ? '情报打探 (仅限白天)' : guest.isInvestigated ? '已获取全部情报' : '打探情报 (1 AP)'}
+            </button>
           </div>
         </div>
 
@@ -138,28 +136,34 @@ export const GuestDetailView: React.FC = () => {
             {!isMale && (
               <div className="grid grid-cols-3 gap-4">
                 <ActionButton 
-                  label="武力强制" icon={<Skull />} 
-                  onClick={() => handleCapture('force')} 
-                  disabled={resources.ap < 2 || (timePhase !== 'Night' && timePhase !== 'LateNight')} 
-                  desc="对抗战斗力 | 消耗 2 AP" 
-                />
-                <ActionButton 
-                  label="炼金下药" icon={<FlaskConical />} 
-                  onClick={() => handleCapture('alchemy')} 
-                  disabled={resources.ap < 2 || (timePhase !== 'Night' && timePhase !== 'LateNight')} 
-                  desc="对抗体质 | 消耗 2 AP" 
-                />
-                <ActionButton 
-                  label="精神诱骗" icon={<Brain />} 
-                  onClick={() => handleCapture('seduce')} 
-                  disabled={resources.ap < 2 || (timePhase !== 'Night' && timePhase !== 'LateNight')} 
-                  desc="对抗意志 | 消耗 2 AP" 
-                />
-                {(!isMale && (timePhase === 'Morning' || timePhase === 'Day')) && (
-                  <div className="col-span-3 text-xs text-red-500/80 text-center mt-2 bg-red-950/20 py-2 border border-red-900/30 rounded-sm">
-                    捕获行动仅在夜间或深夜开放
-                  </div>
-                )}
+                    onClick={() => handleCapture('force')} 
+                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
+                    icon={<Shield className="w-4 h-4 mr-1" />} 
+                    label="武力强攻" 
+                    desc="对抗战斗 | 2 AP" 
+                    colorClass="text-red-400 bg-red-950/20 border-red-900/30 hover:bg-red-950/40"
+                  />
+                  <ActionButton 
+                    onClick={() => handleCapture('alchemy')} 
+                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
+                    icon={<HeartPulse className="w-4 h-4 mr-1" />} 
+                    label="炼金毒素" 
+                    desc="对抗体质 | 2 AP" 
+                    colorClass="text-purple-400 bg-purple-950/20 border-purple-900/30 hover:bg-purple-950/40"
+                  />
+                  <ActionButton 
+                    onClick={() => handleCapture('seduce')} 
+                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
+                    icon={<Brain className="w-4 h-4 mr-1" />} 
+                    label="魅惑诱捕" 
+                    desc="对抗意志 | 2 AP" 
+                    colorClass="text-pink-400 bg-pink-950/20 border-pink-900/30 hover:bg-pink-950/40"
+                  />
+                {(!isMale && (timePhase !== 'Night')) && (
+                      <div className="col-span-3 text-xs text-red-500/80 text-center mt-2 bg-red-950/20 py-2 border border-red-900/30 rounded-sm">
+                        捕获行动仅在夜间开放
+                      </div>
+                    )}
               </div>
             )}
 
@@ -213,14 +217,21 @@ export const GuestDetailView: React.FC = () => {
   );
 };
 
-const ActionButton = ({ label, icon, onClick, disabled, desc }: any) => (
+const ActionButton = ({ onClick, disabled, icon, label, desc, colorClass }: { onClick: () => void, disabled: boolean, icon: React.ReactNode, label: string, desc: string, colorClass?: string }) => (
   <button
     onClick={onClick}
     disabled={disabled}
-    className="flex flex-col items-center justify-center py-4 bg-[color:var(--rt-surface-2)] hover:bg-black/40 text-[#b24b35] border border-[#6b3a25] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed group relative shadow-inner"
+    className={clsx(
+      "py-3 rounded-sm flex flex-col items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed border",
+      colorClass
+    )}
   >
-    <div className="mb-2">{React.cloneElement(icon, { className: "w-6 h-6" })}</div>
-    <span className="text-base font-bold tracking-wider">{label}</span>
-    <span className="text-xs text-[#b24b35]/80 mt-2 font-mono bg-[#2a1710]/70 px-2 py-0.5 rounded-sm border border-[#6b3a25]/50">{desc}</span>
+    <div className="flex items-center text-sm font-bold mb-1">
+      {icon}
+      {label}
+    </div>
+    <span className="text-[10px] opacity-70 bg-black/30 px-2 py-0.5 rounded-sm">
+      {desc}
+    </span>
   </button>
 );

@@ -57,15 +57,14 @@ export const SettlementModal: React.FC<SettlementModalProps> = ({ report }) => {
             </div>
           </div>
 
-          {report.bankruptGuests.length > 0 && (
-            <div className="bg-red-950/20 border border-red-900/30 p-3 rounded-sm">
-              <div className="flex items-center text-red-500 font-bold text-sm mb-2">
-                <Skull className="w-4 h-4 mr-2" />
-                破产驱逐 ({report.bankruptGuests.length} 人)
-              </div>
-              <p className="text-xs text-red-400/80">
-                {report.bankruptGuests.join('，')} 已被榨干财力，丢出门外。
-              </p>
+          {report.departedGuests && report.departedGuests.length > 0 && (
+            <div className="bg-red-950/30 border border-red-900/50 p-4 rounded-sm">
+              <h4 className="text-red-400 text-sm font-bold mb-2">以下客人已到期搬离：</h4>
+              <ul className="list-disc list-inside text-red-300/80 text-sm pl-4">
+                {report.departedGuests.map((name, idx) => (
+                  <li key={idx}>{name}</li>
+                ))}
+              </ul>
             </div>
           )}
 

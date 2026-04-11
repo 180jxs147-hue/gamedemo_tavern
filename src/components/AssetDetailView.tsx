@@ -92,14 +92,19 @@ export const AssetDetailView: React.FC = () => {
       </div>
 
       {/* Actions */}
-      <div className="p-4 bg-[#1a1514] border-t border-[#3e2e25] flex justify-center">
+      <div className="p-4 bg-[#1a1514] border-t border-[#3e2e25] flex justify-center flex-col gap-2">
         <button
           onClick={() => trainAsset(asset.id)}
-          disabled={resources.ap < 1 || timePhase === 'LateNight'}
-          className="w-full py-3 bg-[#241d1a] hover:bg-[#3e2e25] disabled:bg-zinc-900 disabled:text-zinc-600 disabled:border-zinc-800 border border-[#543b2b] text-[#e6b36e] font-bold tracking-widest rounded shadow transition-colors flex justify-center items-center"
+          disabled={resources.ap < 1 || timePhase !== 'Day'}
+          className={clsx(
+            "w-full py-3 font-bold tracking-widest rounded shadow transition-colors flex justify-center items-center border",
+            timePhase === 'Day' && resources.ap >= 1
+              ? "bg-[#241d1a] hover:bg-[#3e2e25] border-[#543b2b] text-[#e6b36e]"
+              : "bg-zinc-900 text-zinc-600 border-zinc-800 cursor-not-allowed"
+          )}
         >
           <Flame className="w-5 h-5 mr-2" />
-          调教 (消耗 1 AP)
+          {timePhase !== 'Day' ? '调教限日间阶段' : '调教 (消耗 1 AP)'}
         </button>
       </div>
     </motion.div>

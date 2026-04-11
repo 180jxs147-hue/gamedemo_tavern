@@ -128,12 +128,21 @@ export interface Facility {
   description: string;
 }
 
+export interface ServiceRecord {
+  guestName: string;
+  assetName: string;
+  matchCount: number;
+  fee: number;
+  review: string;
+}
+
 export interface SettlementReport {
   day: number;
   roomIncome: number;
   serviceIncome: number;
   salaryExpense: number;
   netProfit: number;
-  bankruptGuests: string[]; // 破产被赶走的客人名字
+  departedGuests: string[]; // 到期搬离的客人名字
   alertPenalty: number;
+  serviceRecords: ServiceRecord[];
 }

@@ -228,16 +228,18 @@ if (timePhase === 'LateNight') {
             return true;
           });
 
+          let salaryExpense = 0;
           const netProfit = roomIncome + serviceIncome;
           
-          const report: SettlementReport = {
-            day,
+          const report: import('../types/game').SettlementReport = {
+            day: get().day,
             roomIncome,
             serviceIncome,
-            salaryExpense: 0,
+            salaryExpense,
             netProfit,
-            bankruptGuests,
-            alertPenalty: 0
+            departedGuests: bankruptGuests,
+            serviceRecords: [],
+            alertPenalty: 0,
           };
 
           set({
@@ -279,7 +281,7 @@ if (timePhase === 'LateNight') {
 
       investigate: (id) => {
         const { resources, guests, queue } = get();
-        if (resources.ap < 1) return false;
+        if (resources.ap < 1 || get().timePhase !== 'Day') return false;
 
         // 可能在队列中或已入住
         const updateGuest = (g: Guest) => g.id === id ? { ...g, isInvestigated: true } : g;
@@ -294,7 +296,7 @@ if (timePhase === 'LateNight') {
 
       capture: (id, method) => {
         const { resources, guests, assets, timePhase, addLog } = get();
-        if (timePhase !== 'Night' && timePhase !== 'LateNight') return 'failure';
+        if (timePhase !== 'Night') return 'failure';
         if (resources.ap < 2) return 'no_ap';
 
         const target = guests.find(g => g.id === id);
@@ -348,7 +350,7 @@ if (timePhase === 'LateNight') {
 
       trainAsset: (assetId) => {
         const { resources, assets, addLog } = get();
-        if (resources.ap < 1) return false;
+        if (resources.ap < 1 || get().timePhase !== 'Day') return false;
 
         const asset = assets.find(a => a.id === assetId);
         if (!asset) return false;
@@ -392,7 +394,8 @@ if (timePhase === 'LateNight') {
       continueGame: () => set({ gameState: 'playing' }),
 
       assignService: (maleId, assetId) => {
-        const { guests } = get();
+        const { guests, timePhase } = get();
+        if (timePhase !== 'Night') return;
         // 保证每个女客只能同时服务一名男客，如果之前已分配给别人，则从别人那里取消
         set({
           guests: guests.map(g => {

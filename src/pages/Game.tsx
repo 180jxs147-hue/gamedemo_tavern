@@ -13,6 +13,7 @@ import { LogBar } from '../components/LogBar';
 import { DaytimeActionPanel } from '../components/DaytimeActionPanel';
 import { ServiceAssignmentView } from '../components/ServiceAssignmentView';
 import { ReceptionView } from '../components/Reception/ReceptionView';
+import { LateNightView } from '../components/LateNightView';
 
 export const Game: React.FC = () => {
   const { timePhase, latestReport, selectedEntity } = useGameStore();
@@ -33,6 +34,15 @@ export const Game: React.FC = () => {
     );
   }
 
+  if (timePhase === 'LateNight' && latestReport) {
+    return (
+      <div className="flex flex-col h-screen w-screen bg-[color:var(--rt-bg)] overflow-hidden">
+        <LateNightView report={latestReport} />
+        <LogBar />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen w-screen bg-[color:var(--rt-bg)] text-[color:var(--rt-text)] font-sans overflow-hidden">
       <Topbar />
@@ -49,7 +59,7 @@ export const Game: React.FC = () => {
           {selectedEntity?.type === 'guest' && <GuestDetailView />}
           {selectedEntity?.type === 'asset' && <AssetDetailView />}
           {timePhase === 'Day' && <DaytimeActionPanel />}
-          {(timePhase === 'Night' || timePhase === 'LateNight') && (
+          {timePhase === 'Night' && (
             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30">
               <button 
                 onClick={() => setShowServiceView(true)}
