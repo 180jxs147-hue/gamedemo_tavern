@@ -83,6 +83,9 @@ export interface FemaleGuest extends BaseGuest {
   // 抵抗值（类似HP，降低抵抗值可提高捕获率）
   resistance: number;
   maxResistance: number;
+  // 觉察度/警觉度（遭遇战中，如果满了目标会逃跑并增加酒馆大警戒度）
+  awareness: number;
+  maxAwareness: number;
   // 资产属性（被捕获后）
   obedience: number;
   charm: number;

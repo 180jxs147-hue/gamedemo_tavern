@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
-import { Shield, Brain, HeartPulse, Crosshair, X, User } from 'lucide-react';
+import { Shield, Brain, HeartPulse, Crosshair, X, User, PackageOpen, AlertTriangle } from 'lucide-react';
 import { FemaleGuest } from '../types/game';
 import { useShallow } from 'zustand/react/shallow';
 import { getRarityColor } from '../utils/ui';
@@ -15,6 +15,8 @@ export const CaptureEncounterView: React.FC = () => {
     executeCaptureAction, 
     attemptCapture, 
     fleeEncounter,
+    useItemInEncounter,
+    inventory,
     resources 
   } = useGameStore(useShallow(state => ({
     activeEncounterId: state.activeEncounterId,
@@ -23,6 +25,8 @@ export const CaptureEncounterView: React.FC = () => {
     executeCaptureAction: state.executeCaptureAction,
     attemptCapture: state.attemptCapture,
     fleeEncounter: state.fleeEncounter,
+    useItemInEncounter: state.useItemInEncounter,
+    inventory: state.inventory,
     resources: state.resources
   })));
 
@@ -38,7 +42,11 @@ export const CaptureEncounterView: React.FC = () => {
   if (!target) return null;
 
   const hpPercentage = Math.max(0, (target.resistance / target.maxResistance) * 100);
+  const awarenessPercentage = Math.max(0, Math.min(100, (target.awareness / target.maxAwareness) * 100));
   const captureRate = Math.max(5, Math.floor(100 - hpPercentage));
+
+  const hasItemS2 = inventory.find(i => i.id === 's2')?.quantity || 0; // 安神香
+  const hasItemS3 = inventory.find(i => i.id === 's3')?.quantity || 0; // 迷幻药剂
 
   return (
     <motion.div 
@@ -79,24 +87,46 @@ export const CaptureEncounterView: React.FC = () => {
               </button>
             </div>
 
-            <div className="mt-4 bg-[#1a1514]/80 backdrop-blur-md border border-[#3e2e25] p-4 rounded-sm">
-              <div className="flex justify-between text-sm mb-2 font-bold">
-                <span className="text-[#e6b36e]">抵抗意志</span>
-                <span className="text-red-400">{target.resistance} / {target.maxResistance}</span>
+            <div className="mt-4 bg-[#1a1514]/80 backdrop-blur-md border border-[#3e2e25] p-4 rounded-sm flex flex-col gap-4">
+              <div>
+                <div className="flex justify-between text-sm mb-2 font-bold">
+                  <span className="text-[#e6b36e]">抵抗意志</span>
+                  <span className="text-amber-400">{target.resistance} / {target.maxResistance}</span>
+                </div>
+                <div className="w-full h-3 bg-zinc-900 rounded-sm overflow-hidden border border-[#3e2e25]">
+                  <motion.div 
+                    initial={{ width: `${hpPercentage}%` }}
+                    animate={{ width: `${hpPercentage}%` }}
+                    className={clsx(
+                      "h-full transition-all duration-500",
+                      hpPercentage > 50 ? "bg-emerald-500" : hpPercentage > 20 ? "bg-amber-500" : "bg-red-500"
+                    )}
+                  />
+                </div>
+                <p className="text-xs text-zinc-500 mt-1 text-right">
+                  降低抵抗值可大幅提升捕获成功率。
+                </p>
               </div>
-              <div className="w-full h-4 bg-zinc-900 rounded-sm overflow-hidden border border-[#3e2e25]">
-                <motion.div 
-                  initial={{ width: `${hpPercentage}%` }}
-                  animate={{ width: `${hpPercentage}%` }}
-                  className={clsx(
-                    "h-full transition-all duration-500",
-                    hpPercentage > 50 ? "bg-emerald-500" : hpPercentage > 20 ? "bg-amber-500" : "bg-red-500"
-                  )}
-                />
+
+              <div>
+                <div className="flex justify-between text-sm mb-2 font-bold">
+                  <span className="text-red-400 flex items-center"><AlertTriangle className="w-4 h-4 mr-1" />警觉度</span>
+                  <span className="text-red-400">{target.awareness} / {target.maxAwareness}</span>
+                </div>
+                <div className="w-full h-3 bg-zinc-900 rounded-sm overflow-hidden border border-[#3e2e25]">
+                  <motion.div 
+                    initial={{ width: `${awarenessPercentage}%` }}
+                    animate={{ width: `${awarenessPercentage}%` }}
+                    className={clsx(
+                      "h-full transition-all duration-500",
+                      awarenessPercentage > 80 ? "bg-red-600" : awarenessPercentage > 50 ? "bg-orange-500" : "bg-zinc-500"
+                    )}
+                  />
+                </div>
+                <p className="text-xs text-zinc-500 mt-1 text-right">
+                  警觉度满时目标将呼救逃跑，导致大警戒度飙升。
+                </p>
               </div>
-              <p className="text-xs text-zinc-500 mt-2 text-right">
-                降低抵抗值可大幅提升捕获成功率。
-              </p>
             </div>
 
             <div className="mt-4 bg-[#1a1514]/80 backdrop-blur-md border border-[#3e2e25] p-4 rounded-sm">
@@ -166,7 +196,26 @@ export const CaptureEncounterView: React.FC = () => {
           </div>
 
           <div className="p-4 border-t border-[#3e2e25] bg-[#161211]">
-            <div className="text-xs text-zinc-500 mb-3 text-center">使用克制手段可造成双倍抵抗削减</div>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                onClick={() => useItemInEncounter('s2')}
+                disabled={hasItemS2 === 0}
+                className="py-2 bg-blue-950/20 hover:bg-blue-950/40 border border-blue-900/30 text-blue-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold"
+              >
+                <PackageOpen className="w-3 h-3 mr-1" />
+                安神香 ({hasItemS2})
+              </button>
+              <button
+                onClick={() => useItemInEncounter('s3')}
+                disabled={hasItemS3 === 0}
+                className="py-2 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-900/30 text-purple-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold"
+              >
+                <PackageOpen className="w-3 h-3 mr-1" />
+                迷幻药剂 ({hasItemS3})
+              </button>
+            </div>
+
+            <div className="text-xs text-zinc-500 mb-2 text-center">使用克制手段可造成双倍抵抗削减</div>
             <div className="grid grid-cols-1 gap-2">
               <button
                 onClick={() => executeCaptureAction('force')}

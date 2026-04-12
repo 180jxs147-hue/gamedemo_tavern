@@ -154,8 +154,9 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
   const willpower = randomInt(statRange.min, statRange.max);
   const constitution = randomInt(statRange.min, statRange.max);
   const maxResistance = combat + willpower + constitution;
-  
-  return {
+  const maxAwareness = alertness * 2 + 50; // 根据警惕性决定遭遇战最大觉察度
+
+  const mainXpOrTrait = randomItem(traits);return {
     id: generateId(),
     name,
     gender: 'Female',
@@ -173,6 +174,8 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
     constitution,
     maxResistance,
     resistance: maxResistance,
+    maxAwareness,
+    awareness: 0,
     traits,
     // 默认被捕获后属性为 0
     obedience: 0,

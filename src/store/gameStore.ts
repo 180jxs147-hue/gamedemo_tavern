@@ -44,6 +44,7 @@ interface GameState {
   executeCaptureAction: (type: 'force' | 'seduce' | 'drug') => void;
   attemptCapture: () => void;
 
+  useItemInEncounter: (itemId: string) => void;
   // 交互选择状态
   selectedEntity: { type: 'guest' | 'asset'; id: string } | null;
   setSelectedEntity: (entity: { type: 'guest' | 'asset'; id: string } | null) => void;
@@ -311,11 +312,44 @@ if (timePhase === 'LateNight') {
         return true;
       },
 
-      startEncounter: (id) => set({ activeEncounterId: id, encounterLogs: ['你悄悄潜入了目标的房间，她似乎还没有察觉。'] }),
+      startEncounter: (id) => set(state => ({ 
+        activeEncounterId: id, 
+        encounterLogs: ['你悄悄潜入了目标的房间，她似乎还没有察觉。'],
+        guests: state.guests.map(g => g.id === id ? { ...g, awareness: 0 } : g)
+      })),
       fleeEncounter: () => set({ activeEncounterId: null, encounterLogs: [] }),
 
+      useItemInEncounter: (itemId) => {
+        const { inventory, activeEncounterId, guests, encounterLogs } = get();
+        if (!activeEncounterId) return;
+
+        const target = guests.find(g => g.id === activeEncounterId) as FemaleGuest;
+        const item = inventory.find(i => i.id === itemId && i.quantity > 0);
+        if (!target || !item) return;
+
+        let effectMsg = "";
+        let newResistance = target.resistance;
+        let newAwareness = target.awareness;
+
+        if (itemId === 's2') { // 安神香
+          newAwareness = Math.max(0, target.awareness - 30);
+          effectMsg = "点燃了安神香，目标的警觉大幅度下降了！";
+        } else if (itemId === 's3') { // 迷幻药剂
+          newResistance = Math.max(0, target.resistance - 50);
+          effectMsg = "使用了迷幻药剂，目标的抵抗意志崩溃了！";
+        } else {
+          return; // 不可用的道具
+        }
+
+        set(state => ({
+          inventory: state.inventory.map(i => i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i),
+          guests: state.guests.map(g => g.id === activeEncounterId ? { ...g, resistance: newResistance, awareness: newAwareness } : g),
+          encounterLogs: [...state.encounterLogs, `【物品】你使用了 ${item.name}。${effectMsg}`]
+        }));
+      },
+
       executeCaptureAction: (type) => {
-        const { resources, activeEncounterId, guests, researches } = get();
+        const { resources, activeEncounterId, guests, researches, addLog } = get();
         if (resources.ap < 1 || !activeEncounterId) return;
 
         const target = guests.find(g => g.id === activeEncounterId) as FemaleGuest;
@@ -346,13 +380,38 @@ if (timePhase === 'LateNight') {
 
         const newResistance = Math.max(0, target.resistance - finalDmg);
         
+        // Target's counter-reaction (Awareness increase)
+        const awarenessGain = Math.floor(target.alertness / 2) + Math.floor(Math.random() * 10);
+        const newAwareness = target.awareness + awarenessGain;
+        
         const typeName = type === 'force' ? '武力压制' : type === 'seduce' ? '言语魅惑' : '炼金下药';
 
-        set(state => ({
-            resources: { ...state.resources, ap: state.resources.ap - 1 },
-            guests: state.guests.map(g => g.id === activeEncounterId ? { ...g, resistance: newResistance } : g),
-            encounterLogs: [...state.encounterLogs, `使用了【${typeName}】，造成了 ${finalDmg} 点抵抗削减。${effectiveText}`]
-        }));
+        const actionLog = `使用了【${typeName}】，造成了 ${finalDmg} 点抵抗削减。${effectiveText}`;
+        const reactionLog = `【警觉】目标的警觉度上升了 ${awarenessGain} 点！`;
+
+        const newLogs = [...get().encounterLogs, actionLog, reactionLog];
+
+        if (newAwareness >= target.maxAwareness) {
+            // Flee condition met
+            newLogs.push("【惊醒】目标完全清醒并大声呼救！你不得不放弃捕获并逃离现场！");
+            set(state => ({
+                resources: { 
+                  ...state.resources, 
+                  ap: state.resources.ap - 1,
+                  alertLevel: Math.min(100, state.resources.alertLevel + 30) // 大幅度增加酒馆警戒
+                },
+                activeEncounterId: null,
+                encounterLogs: [],
+                guests: state.guests.filter(g => g.id !== activeEncounterId) // 目标逃离酒馆
+            }));
+            addLog(`【捕获失败】抓捕 [${target.name}] 时动静过大，目标逃跑了，酒馆警戒度大幅上升！`, 'danger');
+        } else {
+            set(state => ({
+                resources: { ...state.resources, ap: state.resources.ap - 1 },
+                guests: state.guests.map(g => g.id === activeEncounterId ? { ...g, resistance: newResistance, awareness: newAwareness } : g),
+                encounterLogs: newLogs
+            }));
+        }
       },
 
       attemptCapture: () => {
