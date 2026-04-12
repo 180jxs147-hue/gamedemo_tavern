@@ -130,7 +130,7 @@ export const AssetDetailView: React.FC<{ onBack?: () => void }> = ({ onBack }) =
         </div>
 
         {/* Right: Training & Logs */}
-        <div className="flex-1 flex flex-col bg-[#161211]/90 backdrop-blur">
+        <div className="flex-1 flex flex-col bg-[#161211]/90 backdrop-blur overflow-hidden">
           <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
             
             {/* Skills */}
