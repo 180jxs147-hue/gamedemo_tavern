@@ -26,6 +26,15 @@ export const AssetDetailView: React.FC = () => {
     return titles[part][Math.min(9, level - 1)];
   };
 
+  const getCharmTitle = (charm: number) => {
+    if (charm < 20) return '平淡无奇';
+    if (charm < 40) return '楚楚动人';
+    if (charm < 60) return '妩媚多姿';
+    if (charm < 80) return '风情万种';
+    if (charm < 100) return '颠倒众生';
+    return '倾国倾城';
+  };
+
   const SkillRow = ({ label, skill, partId }: { label: string, skill: AssetSkill, partId: 'mouth' | 'breast' | 'vagina' | 'anal' }) => {
     const isSelected = selectedPart === partId;
     const progress = (skill.exp / skill.maxExp) * 100;
@@ -112,7 +121,7 @@ export const AssetDetailView: React.FC = () => {
             <StatBar label="健康值" value={asset.health} color="bg-red-500" />
             <StatBar label="当前情绪" value={asset.mood as unknown as number} color="bg-indigo-400" isText />
             <StatBar label="服从度" value={asset.obedience} color="bg-emerald-500" />
-            <StatBar label="魅力值" value={asset.charm} color="bg-pink-500" />
+            <StatBar label="魅力" value={`${asset.charm} [${getCharmTitle(asset.charm)}]`} color="bg-pink-500" isText />
           </div>
         </div>
 
