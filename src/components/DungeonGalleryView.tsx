@@ -32,6 +32,7 @@ export const DungeonGalleryView: React.FC = () => {
 
   const handleCardClick = (id: string) => {
     setSelectedEntity({ type: 'asset', id });
+    setDungeonOpen(false);
   };
 
   const getCharmTitle = (charm: number) => {

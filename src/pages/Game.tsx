@@ -20,7 +20,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 
 export const Game: React.FC = () => {
-  const {  timePhase, latestReport, selectedEntity  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase, latestReport: state.latestReport, selectedEntity: state.selectedEntity })));
+  const {  timePhase, latestReport, selectedEntity, isDungeonOpen  } = useGameStore(useShallow(state => ({ timePhase: state.timePhase, latestReport: state.latestReport, selectedEntity: state.selectedEntity, isDungeonOpen: state.isDungeonOpen })));
   const [showServiceView, setShowServiceView] = React.useState(false);
 
   if (timePhase === 'Morning') {
@@ -92,6 +92,9 @@ export const Game: React.FC = () => {
         {latestReport && <SettlementModal report={latestReport} />}
       </AnimatePresence>
       <CaptureEncounterView />
+      <AnimatePresence>
+        {isDungeonOpen && <DungeonGalleryView />}
+      </AnimatePresence>
     </div>
   );
 };
