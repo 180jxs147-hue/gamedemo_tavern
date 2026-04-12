@@ -14,6 +14,7 @@ import { DaytimeActionPanel } from '../components/DaytimeActionPanel';
 import { ServiceAssignmentView } from '../components/ServiceAssignmentView';
 import { ReceptionView } from '../components/Reception/ReceptionView';
 import { LateNightView } from '../components/LateNightView';
+import { CaptureEncounterView } from '../components/CaptureEncounterView';
 import { useShallow } from 'zustand/react/shallow';
 
 
@@ -89,6 +90,7 @@ export const Game: React.FC = () => {
       <AnimatePresence>
         {latestReport && <SettlementModal report={latestReport} />}
       </AnimatePresence>
+      <CaptureEncounterView />
     </div>
   );
 };

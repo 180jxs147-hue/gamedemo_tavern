@@ -149,6 +149,12 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
   const race = randomItem(RACES);
   const portrait = FEMALE_PORTRAITS[race];
   
+  const combat = randomInt(statRange.min, statRange.max);
+  const alertness = randomInt(statRange.min, statRange.max);
+  const willpower = randomInt(statRange.min, statRange.max);
+  const constitution = randomInt(statRange.min, statRange.max);
+  const maxResistance = combat + willpower + constitution;
+  
   return {
     id: generateId(),
     name,
@@ -161,10 +167,12 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
     daysStayed: 0,
     status: 'Waiting',
     isInvestigated: false,
-    combat: randomInt(statRange.min, statRange.max),
-    alertness: randomInt(statRange.min, statRange.max),
-    willpower: randomInt(statRange.min, statRange.max),
-    constitution: randomInt(statRange.min, statRange.max),
+    combat,
+    alertness,
+    willpower,
+    constitution,
+    maxResistance,
+    resistance: maxResistance,
     traits,
     // 默认被捕获后属性为 0
     obedience: 0,

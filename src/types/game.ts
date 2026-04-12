@@ -80,6 +80,9 @@ export interface FemaleGuest extends BaseGuest {
   alertness: number;
   willpower: number;
   constitution: number;
+  // 抵抗值（类似HP，降低抵抗值可提高捕获率）
+  resistance: number;
+  maxResistance: number;
   // 资产属性（被捕获后）
   obedience: number;
   charm: number;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Guest, FemaleGuest, MaleGuest } from '../types/game';
-import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff, Coins, HeartPulse, Brain, FlaskConical } from 'lucide-react';
+import { X, Search, Shield, Zap, Skull, HeartHandshake, Eye, EyeOff, Coins, HeartPulse, Brain, FlaskConical, User, Crosshair } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 
 export const GuestDetailView: React.FC = () => {
-  const {  selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, capture, assignService, assets  } = useGameStore(useShallow(state => ({ selectedEntity: state.selectedEntity, setSelectedEntity: state.setSelectedEntity, guests: state.guests, resources: state.resources, timePhase: state.timePhase, investigate: state.investigate, capture: state.capture, assignService: state.assignService, assets: state.assets })));
+  const {  selectedEntity, setSelectedEntity, guests, resources, timePhase, investigate, startEncounter, assignService, assets  } = useGameStore(useShallow(state => ({ selectedEntity: state.selectedEntity, setSelectedEntity: state.setSelectedEntity, guests: state.guests, resources: state.resources, timePhase: state.timePhase, investigate: state.investigate, startEncounter: state.startEncounter, assignService: state.assignService, assets: state.assets })));
   const [showAssign, setShowAssign] = useState(false);
 
   if (!selectedEntity || selectedEntity.type !== 'guest') return null;
@@ -26,8 +26,8 @@ export const GuestDetailView: React.FC = () => {
 
   const handleInvestigate = () => investigate(guest.id);
 
-  const handleCapture = (method: 'alchemy' | 'force' | 'seduce') => {
-    capture(guest.id, method);
+  const handleEncounter = () => {
+    startEncounter(guest.id);
   };
 
   const StatRow = ({ label, value, icon, isHidden }: { label: string, value: string | number, icon?: React.ReactNode, isHidden?: boolean }) => (
@@ -136,36 +136,26 @@ export const GuestDetailView: React.FC = () => {
             <h4 className="text-sm font-bold text-[color:var(--rt-muted)] mb-4 uppercase tracking-widest">可用互动指令</h4>
             
             {!isMale && (
-              <div className="grid grid-cols-3 gap-4">
-                <ActionButton 
-                    onClick={() => handleCapture('force')} 
-                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
-                    icon={<Shield className="w-4 h-4 mr-1" />} 
-                    label="武力强攻" 
-                    desc="对抗战斗 | 2 AP" 
-                    colorClass="text-red-400 bg-red-950/20 border-red-900/30 hover:bg-red-950/40"
-                  />
-                  <ActionButton 
-                    onClick={() => handleCapture('alchemy')} 
-                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
-                    icon={<HeartPulse className="w-4 h-4 mr-1" />} 
-                    label="炼金毒素" 
-                    desc="对抗体质 | 2 AP" 
-                    colorClass="text-purple-400 bg-purple-950/20 border-purple-900/30 hover:bg-purple-950/40"
-                  />
-                  <ActionButton 
-                    onClick={() => handleCapture('seduce')} 
-                    disabled={resources.ap < 2 || timePhase !== 'Night'} 
-                    icon={<Brain className="w-4 h-4 mr-1" />} 
-                    label="魅惑诱捕" 
-                    desc="对抗意志 | 2 AP" 
-                    colorClass="text-pink-400 bg-pink-950/20 border-pink-900/30 hover:bg-pink-950/40"
-                  />
-                {(!isMale && (timePhase !== 'Night')) && (
-                      <div className="col-span-3 text-xs text-red-500/80 text-center mt-2 bg-red-950/20 py-2 border border-red-900/30 rounded-sm">
-                        捕获行动仅在夜间开放
-                      </div>
-                    )}
+              <div className="space-y-3">
+                <button
+                  onClick={handleEncounter}
+                  disabled={timePhase !== 'Night'}
+                  className={clsx(
+                    "w-full py-4 rounded-sm font-bold tracking-widest transition-all flex flex-col items-center justify-center border shadow-lg relative overflow-hidden group",
+                    timePhase === 'Night' 
+                      ? "bg-red-950/40 border-red-500/50 text-red-400 hover:bg-red-900/60" 
+                      : "bg-[#120e0d] border-[#3e2e25] text-[#543b2b] cursor-not-allowed"
+                  )}
+                >
+                  {timePhase === 'Night' && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />}
+                  <div className="flex items-center text-lg mb-1 z-10">
+                    <Crosshair className="w-5 h-5 mr-2" />
+                    {timePhase !== 'Night' ? '捕获行动仅在夜间开放' : '潜入房间 (触发捕获遭遇战)'}
+                  </div>
+                  {timePhase === 'Night' && (
+                    <span className="text-xs text-red-300/60 z-10">消耗行动点削减抵抗意志，实施抓捕</span>
+                  )}
+                </button>
               </div>
             )}
 

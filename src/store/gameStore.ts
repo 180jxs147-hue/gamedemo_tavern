@@ -36,6 +36,14 @@ interface GameState {
   backToMenu: () => void;
   resetGame: () => void;
   
+  // 捕获遭遇战
+  activeEncounterId: string | null;
+  encounterLogs: string[];
+  startEncounter: (id: string) => void;
+  fleeEncounter: () => void;
+  executeCaptureAction: (type: 'force' | 'seduce' | 'drug') => void;
+  attemptCapture: () => void;
+
   // 交互选择状态
   selectedEntity: { type: 'guest' | 'asset'; id: string } | null;
   setSelectedEntity: (entity: { type: 'guest' | 'asset'; id: string } | null) => void;
@@ -106,6 +114,8 @@ export const useGameStore = create<GameState>()(
       facilities: [],
       latestReport: null,
       selectedEntity: null,
+      activeEncounterId: null,
+      encounterLogs: [],
 
       addLog: (message, type = 'info') => set(state => ({
         logs: [...state.logs, {
@@ -299,6 +309,90 @@ if (timePhase === 'LateNight') {
           queue: queue.map(updateGuest)
         });
         return true;
+      },
+
+      startEncounter: (id) => set({ activeEncounterId: id, encounterLogs: ['你悄悄潜入了目标的房间，她似乎还没有察觉。'] }),
+      fleeEncounter: () => set({ activeEncounterId: null, encounterLogs: [] }),
+
+      executeCaptureAction: (type) => {
+        const { resources, activeEncounterId, guests, researches } = get();
+        if (resources.ap < 1 || !activeEncounterId) return;
+
+        const target = guests.find(g => g.id === activeEncounterId) as FemaleGuest;
+        if (!target) return;
+
+        let multiplier = 1;
+        const traits = target.traits;
+        let effectiveText = "效果一般。";
+
+        if (type === 'force') {
+            if (traits.some(t => ['胆怯', '受虐狂', '娇小'].includes(t))) multiplier = 2;
+            else if (traits.some(t => ['狂野', '傲慢', '丰满'].includes(t))) multiplier = 0.5;
+        } else if (type === 'seduce') {
+            if (traits.some(t => ['淫荡', '虚荣', '温柔'].includes(t))) multiplier = 2;
+            else if (traits.some(t => ['保守', '高冷', '孤僻'].includes(t))) multiplier = 0.5;
+        } else if (type === 'drug') {
+            if (traits.some(t => ['贪婪', '傲慢', '狂野'].includes(t))) multiplier = 2;
+            else if (traits.some(t => ['胆怯', '顺从'].includes(t))) multiplier = 0.5;
+        }
+
+        if (multiplier === 2) effectiveText = "效果拔群！目标显然对这种手段缺乏防备！";
+        if (multiplier === 0.5) effectiveText = "收效甚微... 目标对此有很强的抗性。";
+
+        const hasToxin = researches.find(r => r.id === 'r1')?.isUnlocked;
+        const baseDmg = Math.floor(Math.random() * 11) + 10; // 10-20 base dmg
+        let finalDmg = Math.floor(baseDmg * multiplier);
+        if (type === 'drug' && hasToxin) finalDmg += 10;
+
+        const newResistance = Math.max(0, target.resistance - finalDmg);
+        
+        const typeName = type === 'force' ? '武力压制' : type === 'seduce' ? '言语魅惑' : '炼金下药';
+
+        set(state => ({
+            resources: { ...state.resources, ap: state.resources.ap - 1 },
+            guests: state.guests.map(g => g.id === activeEncounterId ? { ...g, resistance: newResistance } : g),
+            encounterLogs: [...state.encounterLogs, `使用了【${typeName}】，造成了 ${finalDmg} 点抵抗削减。${effectiveText}`]
+        }));
+      },
+
+      attemptCapture: () => {
+        const { resources, activeEncounterId, guests, assets, addLog } = get();
+        if (resources.ap < 1 || !activeEncounterId) return;
+
+        const target = guests.find(g => g.id === activeEncounterId) as FemaleGuest;
+        if (!target) return;
+
+        const successRate = Math.max(5, Math.floor(100 - (target.resistance / target.maxResistance) * 100));
+        const roll = Math.floor(Math.random() * 100) + 1;
+
+        const isSuccess = roll <= successRate;
+
+        if (isSuccess) {
+            set(state => ({
+                resources: { ...state.resources, ap: state.resources.ap - 1 },
+                guests: state.guests.filter(g => g.id !== activeEncounterId),
+                assets: [...state.assets, {
+                    ...target,
+                    status: 'Captured',
+                    obedience: Math.floor(Math.random() * 20),
+                    charm: Math.floor(Math.random() * 20) + 10,
+                    skills: { mouth: 0, breast: 0, vagina: 0, anal: 0 }
+                }],
+                activeEncounterId: null,
+                encounterLogs: []
+            }));
+            addLog(`【捕获成功】你成功将 [${target.name}] 拘禁入地下暗房！(成功率: ${successRate}%, 掷骰: ${roll})`, 'success');
+        } else {
+            set(state => ({
+                resources: {
+                    ...state.resources,
+                    ap: state.resources.ap - 1,
+                    alertLevel: Math.min(100, state.resources.alertLevel + 20)
+                },
+                encounterLogs: [...state.encounterLogs, `抛出锁链失败！(成功率: ${successRate}%, 掷骰: ${roll}) 目标的挣扎导致酒馆警戒度上升 20 点！`]
+            }));
+            addLog(`【捕获失败】试图抓捕 [${target.name}] 失败，警戒度大幅上升！`, 'danger');
+        }
       },
 
       capture: (id, method) => {
