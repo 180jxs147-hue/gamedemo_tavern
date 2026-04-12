@@ -13,9 +13,23 @@ export const AssetDetailView: React.FC = () => {
   
   const [selectedPart, setSelectedPart] = useState<'mouth' | 'breast' | 'vagina' | 'anal'>('mouth');
 
+  const getSkillTitle = (part: 'mouth' | 'breast' | 'vagina' | 'anal', level: number) => {
+    if (level === 0) return '未经开发';
+    
+    const titles = {
+      mouth: ['生涩之吻', '顺从之吻', '灵巧舌技', '缠绵口技', '深喉吞吐', '迷幻咽喉', '销魂之口', '极乐神吻', '魔幻巧舌', '绝世尤物'],
+      breast: ['生涩双峰', '敏感乳首', '顺从夹弄', '柔情乳交', '沉沦峰峦', '迷幻双球', '销魂乳浪', '极乐雪峰', '魔幻玉乳', '绝世尤物'],
+      vagina: ['生涩幽谷', '敏感花穴', '顺从之壶', '柔情春水', '沉沦深渊', '迷幻桃花', '销魂名器', '极乐神壶', '魔幻水仙', '绝世尤物'],
+      anal: ['生涩后庭', '敏感暗穴', '顺从菊门', '柔情秘洞', '沉沦幽径', '迷幻花蕊', '销魂后穴', '极乐神菊', '魔幻暗渊', '绝世尤物']
+    };
+    
+    return titles[part][Math.min(9, level - 1)];
+  };
+
   const SkillRow = ({ label, skill, partId }: { label: string, skill: AssetSkill, partId: 'mouth' | 'breast' | 'vagina' | 'anal' }) => {
     const isSelected = selectedPart === partId;
     const progress = (skill.exp / skill.maxExp) * 100;
+    const title = getSkillTitle(partId, skill.level);
     
     return (
       <div 
@@ -27,7 +41,10 @@ export const AssetDetailView: React.FC = () => {
       >
         <div className="flex justify-between items-center mb-1">
           <span className="text-[#cbbba9] text-sm font-bold">{label}</span>
-          <span className="text-[#e6b36e] font-serif font-bold">Lv.{skill.level}</span>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-pink-400 opacity-80">{title}</span>
+            <span className="text-[#e6b36e] font-serif font-bold">Lv.{skill.level}</span>
+          </div>
         </div>
         <div className="w-full h-1.5 bg-zinc-900 rounded-sm overflow-hidden">
           <div 
@@ -151,11 +168,11 @@ export const AssetDetailView: React.FC = () => {
         </div>
         <div className="grid grid-cols-3 gap-2">
           <button
-            onClick={() => trainAsset(asset.id, selectedPart, 'gentle')}
-            disabled={resources.ap < 1 || timePhase !== 'Day' || asset.health < 10}
+            onClick={() => trainAsset(asset.id, selectedPart, 'heal')}
+            disabled={resources.ap < 1 || timePhase !== 'Day' || asset.health === asset.maxHealth}
             className="py-2 bg-emerald-950/30 hover:bg-emerald-900/50 border border-emerald-900/50 text-emerald-400 rounded-sm text-xs font-bold transition-colors disabled:opacity-30"
           >
-            温柔教导
+            温柔安抚 (恢复健康)
           </button>
           <button
             onClick={() => trainAsset(asset.id, selectedPart, 'normal')}

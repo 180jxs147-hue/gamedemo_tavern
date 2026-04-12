@@ -29,7 +29,7 @@ interface GameState {
   rejectGuest: (id: string) => void;
   investigate: (id: string) => boolean; // 返回是否成功（AP限制）
   capture: (id: string, method: 'alchemy' | 'force' | 'seduce') => 'success' | 'failure' | 'no_ap';
-  trainAsset: (assetId: string, part: 'mouth' | 'breast' | 'vagina' | 'anal', intensity: 'gentle' | 'normal' | 'harsh') => boolean;
+  trainAsset: (assetId: string, part: 'mouth' | 'breast' | 'vagina' | 'anal', intensity: 'heal' | 'normal' | 'harsh') => boolean;
   assignService: (maleId: string, assetId: string) => void;
   startGame: () => void;
   continueGame: () => void;
@@ -548,18 +548,20 @@ if (timePhase === 'LateNight') {
         let healthCost = 0;
         let charmGain = 0;
         let logMsg = "";
+        let isHealing = false;
 
         const traits = asset.traits;
         let isResistant = traits.includes('保守') || traits.includes('高冷') || traits.includes('傲慢');
         let isMaso = traits.includes('受虐狂');
         let isNympho = traits.includes('淫荡') || traits.includes('狂野');
 
-        if (intensity === 'gentle') {
-            expGain = 10;
-            obdGain = isResistant ? 5 : 2;
-            healthCost = 5;
+        if (intensity === 'heal') {
+            isHealing = true;
+            expGain = 0; // 不增加经验
+            obdGain = isResistant ? 10 : 5;
+            healthCost = -30; // 恢复 30 点健康
             charmGain = 1;
-            logMsg = `你温柔地指导她关于【${part}】的侍奉技巧。`;
+            logMsg = `你暂时放下了调教的鞭子，温柔地安抚和照料了她。`;
         } else if (intensity === 'normal') {
             expGain = 20;
             obdGain = 5;
@@ -576,13 +578,13 @@ if (timePhase === 'LateNight') {
             else if (!isNympho) logMsg += "她痛苦地挣扎，眼中闪过一丝抗拒。";
         }
 
-        // Apply bonus/penalty based on traits
-        if (isNympho) {
+        // Apply bonus/penalty based on traits (only if not healing)
+        if (!isHealing && isNympho) {
             expGain = Math.floor(expGain * 1.5);
             logMsg += "天生的体质让她很快进入了状态。";
         }
 
-        let newHealth = Math.max(0, asset.health - healthCost);
+        let newHealth = Math.min(asset.maxHealth, Math.max(0, asset.health - healthCost));
         let newObedience = Math.max(0, Math.min(asset.maxObedience, asset.obedience + obdGain));
         let newCharm = Math.max(0, asset.charm + charmGain);
         
