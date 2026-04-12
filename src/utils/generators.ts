@@ -179,13 +179,18 @@ export const generateFemaleGuest = (rarity: GuestRarity): FemaleGuest => {
     traits,
     // 默认被捕获后属性为 0
     obedience: 0,
+    maxObedience: 100,
     charm: 0,
+    health: 100,
+    maxHealth: 100,
+    mood: '抵抗',
     skills: {
-      mouth: 0,
-      breast: 0,
-      vagina: 0,
-      anal: 0
+      mouth: { level: 0, exp: 0, maxExp: 100 },
+      breast: { level: 0, exp: 0, maxExp: 100 },
+      vagina: { level: 0, exp: 0, maxExp: 100 },
+      anal: { level: 0, exp: 0, maxExp: 100 },
     },
+    trainingLogs: [],
     reception: generateReceptionData(name, false, traits[0], stayDuration)
   };
 };

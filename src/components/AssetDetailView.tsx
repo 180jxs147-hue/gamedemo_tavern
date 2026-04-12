@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Shield, Brain, HeartPulse, Search, Heart, Activity, Flame, X } from 'lucide-react';
-import { FemaleGuest } from '../types/game';
+import { Shield, Brain, HeartPulse, Search, Heart, Activity, Flame, X, AlertTriangle, HeartHandshake } from 'lucide-react';
+import { FemaleGuest, AssetSkill } from '../types/game';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
@@ -10,6 +10,37 @@ import { useShallow } from 'zustand/react/shallow';
 
 export const AssetDetailView: React.FC = () => {
   const {  selectedEntity, assets, setSelectedEntity, trainAsset, resources, timePhase  } = useGameStore(useShallow(state => ({ selectedEntity: state.selectedEntity, assets: state.assets, setSelectedEntity: state.setSelectedEntity, trainAsset: state.trainAsset, resources: state.resources, timePhase: state.timePhase })));
+  
+  const [selectedPart, setSelectedPart] = useState<'mouth' | 'breast' | 'vagina' | 'anal'>('mouth');
+
+  const SkillRow = ({ label, skill, partId }: { label: string, skill: AssetSkill, partId: 'mouth' | 'breast' | 'vagina' | 'anal' }) => {
+    const isSelected = selectedPart === partId;
+    const progress = (skill.exp / skill.maxExp) * 100;
+    
+    return (
+      <div 
+        onClick={() => setSelectedPart(partId)}
+        className={clsx(
+          "flex flex-col py-2 px-3 border rounded-sm cursor-pointer transition-colors",
+          isSelected ? "bg-[#3e2e25] border-[#e6b36e]" : "bg-black/30 border-zinc-800 hover:border-[#543b2b]"
+        )}
+      >
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-[#cbbba9] text-sm font-bold">{label}</span>
+          <span className="text-[#e6b36e] font-serif font-bold">Lv.{skill.level}</span>
+        </div>
+        <div className="w-full h-1.5 bg-zinc-900 rounded-sm overflow-hidden">
+          <div 
+            className="h-full bg-pink-500 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="text-[10px] text-right mt-0.5 text-zinc-500">
+          {skill.level === 10 ? 'MAX' : `${skill.exp} / ${skill.maxExp}`}
+        </div>
+      </div>
+    );
+  };
 
   if (selectedEntity?.type !== 'asset') return null;
 
@@ -61,6 +92,8 @@ export const AssetDetailView: React.FC = () => {
           </div>
           
           <div className="p-4 grid grid-cols-2 gap-4 bg-[#1a1514]">
+            <StatBar label="健康值" value={asset.health} color="bg-red-500" />
+            <StatBar label="当前情绪" value={asset.mood as unknown as number} color="bg-indigo-400" isText />
             <StatBar label="服从度" value={asset.obedience} color="bg-emerald-500" />
             <StatBar label="魅力值" value={asset.charm} color="bg-pink-500" />
           </div>
@@ -69,13 +102,13 @@ export const AssetDetailView: React.FC = () => {
         {/* Advanced Skills (性器熟练度) */}
         <div className="bg-[#1d1715] border border-[#3e2e25] p-4 rounded-sm">
           <h4 className="text-[#e6b36e] font-bold mb-4 flex items-center text-sm border-b border-[#3e2e25] pb-2">
-            <Flame className="w-4 h-4 mr-2 text-orange-500" /> 技巧熟练度
+            <Flame className="w-4 h-4 mr-2 text-orange-500" /> 技巧熟练度 (点击选择)
           </h4>
-          <div className="grid grid-cols-1 gap-3">
-            <ProgressBar label="口 (Mouth)" value={asset.skills.mouth} color="bg-rose-400" />
-            <ProgressBar label="乳 (Breast)" value={asset.skills.breast} color="bg-fuchsia-400" />
-            <ProgressBar label="阴 (Vagina)" value={asset.skills.vagina} color="bg-purple-500" />
-            <ProgressBar label="菊 (Anal)" value={asset.skills.anal} color="bg-indigo-500" />
+          <div className="grid grid-cols-2 gap-3">
+            <SkillRow label="口 (Mouth)" skill={asset.skills.mouth} partId="mouth" />
+            <SkillRow label="乳 (Breast)" skill={asset.skills.breast} partId="breast" />
+            <SkillRow label="阴 (Vagina)" skill={asset.skills.vagina} partId="vagina" />
+            <SkillRow label="菊 (Anal)" skill={asset.skills.anal} partId="anal" />
           </div>
         </div>
 
@@ -91,37 +124,70 @@ export const AssetDetailView: React.FC = () => {
             <StatRow label="警觉" value={asset.alertness} icon={<Search className="w-4 h-4 text-yellow-400" />} />
           </div>
         </div>
+
+        {/* Training Logs */}
+        <div className="bg-[#1d1715] border border-[#3e2e25] p-4 rounded-sm">
+          <h4 className="text-[#e6b36e] font-bold mb-4 flex items-center text-sm border-b border-[#3e2e25] pb-2">
+            调教记录
+          </h4>
+          <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+            {asset.trainingLogs && asset.trainingLogs.length > 0 ? (
+              asset.trainingLogs.map((log, idx) => (
+                <div key={idx} className="text-xs text-[#a09081] border-b border-[#3e2e25] pb-1 last:border-0">
+                  {log}
+                </div>
+              ))
+            ) : (
+              <div className="text-xs text-zinc-600 text-center italic">暂无记录</div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="p-4 bg-[#1a1514] border-t border-[#3e2e25] flex justify-center flex-col gap-2">
-        <button
-          onClick={() => trainAsset(asset.id)}
-          disabled={resources.ap < 1 || timePhase !== 'Day'}
-          className={clsx(
-            "w-full py-3 font-bold tracking-widest rounded shadow transition-colors flex justify-center items-center border",
-            timePhase === 'Day' && resources.ap >= 1
-              ? "bg-[#241d1a] hover:bg-[#3e2e25] border-[#543b2b] text-[#e6b36e]"
-              : "bg-zinc-900 text-zinc-600 border-zinc-800 cursor-not-allowed"
-          )}
-        >
-          <Flame className="w-5 h-5 mr-2" />
-          {timePhase !== 'Day' ? '调教限日间阶段' : '调教 (消耗 1 AP)'}
-        </button>
+      <div className="p-4 bg-[#1a1514] border-t border-[#3e2e25] flex flex-col gap-2">
+        <div className="text-xs text-center text-[#a09081] mb-1">
+          {timePhase === 'Day' ? '选择上方部位并指定调教强度 (-1 AP)' : '调教限日间阶段'}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            onClick={() => trainAsset(asset.id, selectedPart, 'gentle')}
+            disabled={resources.ap < 1 || timePhase !== 'Day' || asset.health < 10}
+            className="py-2 bg-emerald-950/30 hover:bg-emerald-900/50 border border-emerald-900/50 text-emerald-400 rounded-sm text-xs font-bold transition-colors disabled:opacity-30"
+          >
+            温柔教导
+          </button>
+          <button
+            onClick={() => trainAsset(asset.id, selectedPart, 'normal')}
+            disabled={resources.ap < 1 || timePhase !== 'Day' || asset.health < 20}
+            className="py-2 bg-blue-950/30 hover:bg-blue-900/50 border border-blue-900/50 text-blue-400 rounded-sm text-xs font-bold transition-colors disabled:opacity-30"
+          >
+            标准开发
+          </button>
+          <button
+            onClick={() => trainAsset(asset.id, selectedPart, 'harsh')}
+            disabled={resources.ap < 1 || timePhase !== 'Day' || asset.health < 40}
+            className="py-2 bg-red-950/30 hover:bg-red-900/50 border border-red-900/50 text-red-400 rounded-sm text-xs font-bold transition-colors disabled:opacity-30"
+          >
+            严厉鞭挞
+          </button>
+        </div>
       </div>
     </motion.div>
   );
 };
 
-const StatBar = ({ label, value, color }: { label: string, value: number, color: string }) => (
+const StatBar = ({ label, value, color, isText }: { label: string, value: number | string, color: string, isText?: boolean }) => (
   <div className="flex flex-col">
     <div className="flex justify-between text-xs mb-1">
       <span className="text-[#a09081]">{label}</span>
-      <span className="text-[#e6b36e] font-bold">{value}/100</span>
+      <span className={clsx("font-bold", isText ? color : "text-[#e6b36e]")}>{isText ? value : `${value}/100`}</span>
     </div>
-    <div className="h-1.5 bg-[#120e0d] rounded-full overflow-hidden border border-[#3e2e25]">
-      <div className={`h-full ${color}`} style={{ width: `${Math.min(100, value)}%` }} />
-    </div>
+    {!isText && (
+      <div className="h-1.5 bg-[#120e0d] rounded-full overflow-hidden border border-[#3e2e25]">
+        <div className={`h-full ${color}`} style={{ width: `${Math.min(100, Number(value))}%` }} />
+      </div>
+    )}
   </div>
 );
 

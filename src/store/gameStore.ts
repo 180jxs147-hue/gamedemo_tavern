@@ -29,7 +29,7 @@ interface GameState {
   rejectGuest: (id: string) => void;
   investigate: (id: string) => boolean; // 返回是否成功（AP限制）
   capture: (id: string, method: 'alchemy' | 'force' | 'seduce') => 'success' | 'failure' | 'no_ap';
-  trainAsset: (assetId: string) => boolean;
+  trainAsset: (assetId: string, part: 'mouth' | 'breast' | 'vagina' | 'anal', intensity: 'gentle' | 'normal' | 'harsh') => boolean;
   assignService: (maleId: string, assetId: string) => void;
   startGame: () => void;
   continueGame: () => void;
@@ -442,8 +442,18 @@ if (timePhase === 'LateNight') {
                     ...target,
                     status: 'Captured',
                     obedience: Math.floor(Math.random() * 20),
+                    maxObedience: 100,
                     charm: Math.floor(Math.random() * 20) + 10,
-                    skills: { mouth: 0, breast: 0, vagina: 0, anal: 0 }
+                    health: 100,
+                    maxHealth: 100,
+                    mood: '抵抗',
+                    skills: {
+                      mouth: { level: 0, exp: 0, maxExp: 100 },
+                      breast: { level: 0, exp: 0, maxExp: 100 },
+                      vagina: { level: 0, exp: 0, maxExp: 100 },
+                      anal: { level: 0, exp: 0, maxExp: 100 }
+                    },
+                    trainingLogs: [`[Day ${state.day}] 被你强行拖入了地下暗房，眼神中充满恐惧与仇恨。`]
                 }],
                 activeEncounterId: null,
                 encounterLogs: []
@@ -497,9 +507,19 @@ if (timePhase === 'LateNight') {
             assets: [...assets, { 
               ...female, 
               status: 'Captured', 
-              obedience: Math.floor(Math.random() * 20), 
+              obedience: Math.floor(Math.random() * 20),
+              maxObedience: 100,
               charm: Math.floor(Math.random() * 20) + 10,
-              skills: { mouth: 0, breast: 0, vagina: 0, anal: 0 }
+              health: 100,
+              maxHealth: 100,
+              mood: '抵抗',
+              skills: {
+                mouth: { level: 0, exp: 0, maxExp: 100 },
+                breast: { level: 0, exp: 0, maxExp: 100 },
+                vagina: { level: 0, exp: 0, maxExp: 100 },
+                anal: { level: 0, exp: 0, maxExp: 100 }
+              },
+              trainingLogs: [`[Day ${get().day}] 被你使用手段拘禁入了地下暗房。`]
             }]
           });
           return 'success';
@@ -516,30 +536,98 @@ if (timePhase === 'LateNight') {
         }
       },
 
-      trainAsset: (assetId) => {
-        const { resources, assets, addLog } = get();
+      trainAsset: (assetId, part, intensity) => {
+        const { resources, assets, addLog, day } = get();
         if (resources.ap < 1 || get().timePhase !== 'Day') return false;
 
         const asset = assets.find(a => a.id === assetId);
         if (!asset) return false;
 
-        const skills = asset.skills;
-        const keys = ['mouth', 'breast', 'vagina', 'anal'] as const;
-        const randomSkill = keys[Math.floor(Math.random() * keys.length)];
+        let expGain = 0;
+        let obdGain = 0;
+        let healthCost = 0;
+        let charmGain = 0;
+        let logMsg = "";
+
+        const traits = asset.traits;
+        let isResistant = traits.includes('保守') || traits.includes('高冷') || traits.includes('傲慢');
+        let isMaso = traits.includes('受虐狂');
+        let isNympho = traits.includes('淫荡') || traits.includes('狂野');
+
+        if (intensity === 'gentle') {
+            expGain = 10;
+            obdGain = isResistant ? 5 : 2;
+            healthCost = 5;
+            charmGain = 1;
+            logMsg = `你温柔地指导她关于【${part}】的侍奉技巧。`;
+        } else if (intensity === 'normal') {
+            expGain = 20;
+            obdGain = 5;
+            healthCost = 15;
+            charmGain = 0;
+            logMsg = `你以标准的流程对她的【${part}】进行了开发。`;
+        } else if (intensity === 'harsh') {
+            expGain = 35;
+            obdGain = isMaso ? 15 : -5;
+            healthCost = 30;
+            charmGain = -1;
+            logMsg = `你毫不留情地强行开发了她的【${part}】！`;
+            if (isMaso) logMsg += "她对此感到异常兴奋。";
+            else if (!isNympho) logMsg += "她痛苦地挣扎，眼中闪过一丝抗拒。";
+        }
+
+        // Apply bonus/penalty based on traits
+        if (isNympho) {
+            expGain = Math.floor(expGain * 1.5);
+            logMsg += "天生的体质让她很快进入了状态。";
+        }
+
+        let newHealth = Math.max(0, asset.health - healthCost);
+        let newObedience = Math.max(0, Math.min(asset.maxObedience, asset.obedience + obdGain));
+        let newCharm = Math.max(0, asset.charm + charmGain);
+        
+        let mood = asset.mood;
+        if (newObedience < 20) mood = '抵抗';
+        else if (newObedience < 50) mood = '屈服';
+        else if (newObedience < 80) mood = isMaso ? '享受' : '绝望';
+        else mood = '沉沦';
+
+        const skill = asset.skills[part];
+        let newExp = skill.exp + expGain;
+        let newLevel = skill.level;
+        let newMaxExp = skill.maxExp;
+        
+        let levelUpMsg = "";
+        while (newExp >= newMaxExp && newLevel < 10) {
+            newExp -= newMaxExp;
+            newLevel++;
+            newMaxExp = Math.floor(newMaxExp * 1.5);
+            levelUpMsg = `【等级提升】她的 [${part}] 技巧提升到了 Lv.${newLevel}！`;
+        }
+
+        if (newLevel === 10) {
+            newExp = newMaxExp; // Cap exp
+        }
+
+        const finalLog = `[Day ${day}] ${logMsg} (Exp +${expGain}, 服从度 ${obdGain > 0 ? '+' : ''}${obdGain}, 健康 -${healthCost}) ${levelUpMsg}`;
 
         set({
           resources: { ...resources, ap: resources.ap - 1 },
           assets: assets.map(a => a.id === assetId ? {
             ...a,
-            obedience: Math.min(100, a.obedience + 10),
-            charm: Math.min(100, a.charm + 5),
+            health: newHealth,
+            obedience: newObedience,
+            charm: newCharm,
+            mood,
             skills: {
               ...a.skills,
-              [randomSkill]: Math.min(100, a.skills[randomSkill] + Math.floor(Math.random() * 10) + 5)
-            }
+              [part]: { level: newLevel, exp: newExp, maxExp: newMaxExp }
+            },
+            trainingLogs: [finalLog, ...a.trainingLogs].slice(0, 20)
           } : a)
         });
-        addLog(`【资产调教】消耗 1 AP 调教了 [${asset.name}]。服从度提升，魅力提升，${randomSkill} 技巧提升！`, 'success');
+        
+        addLog(`【资产调教】消耗 1 AP 调教了 [${asset.name}]。${levelUpMsg}`, 'success');
         return true;
       },
 
@@ -549,8 +637,18 @@ if (timePhase === 'LateNight') {
           ...initialAsset,
           status: 'Captured' as const,
           obedience: 50,
+          maxObedience: 100,
           charm: 30,
-          skills: { mouth: 10, breast: 10, vagina: 10, anal: 0 }
+          health: 100,
+          maxHealth: 100,
+          mood: '屈服' as const,
+          skills: { 
+            mouth: { level: 1, exp: 0, maxExp: 100 }, 
+            breast: { level: 1, exp: 0, maxExp: 100 }, 
+            vagina: { level: 1, exp: 0, maxExp: 100 }, 
+            anal: { level: 0, exp: 0, maxExp: 100 } 
+          },
+          trainingLogs: ['这是你带到酒馆的初始资产，对你已经有了一定的服从度。']
         };
 
         set({

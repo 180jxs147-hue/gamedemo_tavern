@@ -76,13 +76,12 @@ export const AssetsPanel: React.FC = () => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    trainAsset(asset.id);
+                    setSelectedEntity({ type: 'asset', id: asset.id });
                   }}
-                  disabled={resources.ap < 1}
-                  className="mt-3 py-1.5 w-full bg-[color:var(--rt-surface-2)] hover:bg-black/40 text-[color:var(--rt-accent)] border border-[color:var(--rt-border-strong)] rounded-sm flex items-center justify-center text-xs transition-colors z-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-3 py-1.5 w-full bg-[color:var(--rt-surface-2)] hover:bg-black/40 text-[color:var(--rt-accent)] border border-[color:var(--rt-border-strong)] rounded-sm flex items-center justify-center text-xs transition-colors z-10"
                 >
                   <BookOpen className="w-3 h-3 mr-1.5" />
-                  调教训练 (-1 AP)
+                  调教管理
                 </button>
               </div>
             );

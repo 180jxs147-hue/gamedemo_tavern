@@ -77,6 +77,12 @@ export interface MaleGuest extends BaseGuest {
   assignedAssetId?: string; // 晚上被分配的服务资产ID
 }
 
+export interface AssetSkill {
+  level: number; // 当前等级 (0-10)
+  exp: number;   // 当前经验值
+  maxExp: number; // 升级所需经验
+}
+
 export interface FemaleGuest extends BaseGuest {
   gender: 'Female';
   combat: number;
@@ -91,13 +97,18 @@ export interface FemaleGuest extends BaseGuest {
   maxAwareness: number;
   // 资产属性（被捕获后）
   obedience: number;
+  maxObedience: number;
   charm: number;
+  health: number; // 健康值，如果太低会无法接客或生病
+  maxHealth: number;
+  mood: '抵抗' | '屈服' | '绝望' | '沉沦' | '享受';
   skills: {
-    mouth: number;
-    breast: number;
-    vagina: number;
-    anal: number;
+    mouth: AssetSkill;
+    breast: AssetSkill;
+    vagina: AssetSkill;
+    anal: AssetSkill;
   };
+  trainingLogs: string[]; // 个人的调教记录
 }
 
 export type Guest = MaleGuest | FemaleGuest;
