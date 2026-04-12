@@ -59,9 +59,8 @@ export const Game: React.FC = () => {
 
         {/* Center: Main Dashboard / Detail View */}
         <main className="flex-1 relative flex flex-col z-10 bg-[color:var(--rt-surface-2)]">
-          {selectedEntity === null && <TavernOverview />}
+          {selectedEntity?.type !== 'guest' && <TavernOverview />}
           {selectedEntity?.type === 'guest' && <GuestDetailView />}
-          {selectedEntity?.type === 'asset' && <AssetDetailView />}
           {timePhase === 'Day' && <DaytimeActionPanel />}
           {timePhase === 'Night' && (
             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30">

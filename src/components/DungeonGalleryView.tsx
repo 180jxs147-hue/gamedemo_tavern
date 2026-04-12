@@ -5,12 +5,14 @@ import { X, Lock, Heart, ShieldAlert, Activity, ArrowDownAZ, ArrowUpAZ, User } f
 import { useShallow } from 'zustand/react/shallow';
 import { clsx } from 'clsx';
 import { getRarityColor } from '../utils/ui';
+import { AssetDetailView } from './AssetDetailView';
 
 export const DungeonGalleryView: React.FC = () => {
-  const { assets, isDungeonOpen, setDungeonOpen, setSelectedEntity } = useGameStore(useShallow(state => ({ 
+  const { assets, isDungeonOpen, setDungeonOpen, selectedEntity, setSelectedEntity } = useGameStore(useShallow(state => ({ 
     assets: state.assets, 
     isDungeonOpen: state.isDungeonOpen, 
     setDungeonOpen: state.setDungeonOpen,
+    selectedEntity: state.selectedEntity,
     setSelectedEntity: state.setSelectedEntity 
   })));
 
@@ -82,7 +84,15 @@ export const DungeonGalleryView: React.FC = () => {
             ))}
           </div>
 
-          <button onClick={() => setDungeonOpen(false)} className="p-2 bg-red-950/30 hover:bg-red-900/50 text-red-400 border border-red-900/50 rounded transition-colors">
+          <button 
+            onClick={() => {
+              setDungeonOpen(false);
+              if (selectedEntity?.type === 'asset') {
+                setSelectedEntity(null);
+              }
+            }} 
+            className="p-2 bg-red-950/30 hover:bg-red-900/50 text-red-400 border border-red-900/50 rounded transition-colors"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -185,6 +195,19 @@ export const DungeonGalleryView: React.FC = () => {
           </div>
         )}
       </div>
+      <AnimatePresence>
+        {selectedEntity?.type === 'asset' && (
+          <motion.div 
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="absolute inset-0 z-50 bg-[#0d0a09]"
+          >
+            <AssetDetailView onBack={() => setSelectedEntity(null)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
