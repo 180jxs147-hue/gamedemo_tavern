@@ -25,7 +25,10 @@ const PhaseLabel = ({ phase }: { phase: TimePhase }) => {
 };
 
 export const Topbar: React.FC = () => {
-  const {  day, timePhase, resources, backToMenu  } = useGameStore(useShallow(state => ({ day: state.day, timePhase: state.timePhase, resources: state.resources, backToMenu: state.backToMenu })));
+  const {  day, timePhase, resources, tavernTier, backToMenu  } = useGameStore(useShallow(state => ({ day: state.day, timePhase: state.timePhase, resources: state.resources, tavernTier: state.tavernTier, backToMenu: state.backToMenu })));
+
+  const tierNames = ['破败酒馆', '普通酒馆', '知名酒馆', '奢华销金窟', '地下帝国'];
+  const currentTierName = tierNames[(tavernTier || 1) - 1];
 
   return (
     <header className="bg-[color:var(--rt-surface)] border-b border-[color:var(--rt-border)] text-[color:var(--rt-text)] p-4 flex justify-between items-center shadow-lg shadow-black/50">
@@ -45,6 +48,11 @@ export const Topbar: React.FC = () => {
               <PhaseLabel phase={timePhase} />
             </span>
           </div>
+        </div>
+
+        <div className="flex items-center px-3 py-1 bg-[#1a1514] border border-[#543b2b] rounded-sm text-sm text-[#e6b36e] font-bold">
+          <Star className="w-4 h-4 mr-2 text-yellow-500" />
+          [{tavernTier || 1}阶] {currentTierName}
         </div>
       </div>
 

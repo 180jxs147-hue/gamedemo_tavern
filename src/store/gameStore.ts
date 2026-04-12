@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { GameResources, TimePhase, MaleGuest, FemaleGuest, Guest, SettlementReport, Facility, LogEntry, InventoryItem, TavernUpgrade, ResearchItem, ShopItem } from '../types/game';
+import { GameResources, TimePhase, MaleGuest, FemaleGuest, Guest, SettlementReport, Facility, LogEntry, InventoryItem, TavernUpgrade, ResearchItem, ShopItem, TavernTier } from '../types/game';
 import { generateDailyQueue, generateFemaleGuest } from '../utils/generators';
 
 interface GameState {
@@ -8,6 +8,8 @@ interface GameState {
   day: number;
   timePhase: TimePhase;
   resources: GameResources;
+  tavernTier: TavernTier;
+  upgradeTavernTier: () => void;
   
   logs: LogEntry[];
   inventory: InventoryItem[];
@@ -81,15 +83,32 @@ const getNextPhase = (current: TimePhase): TimePhase => {
 };
 
 const INITIAL_UPGRADES: TavernUpgrade[] = [
-  { id: 'u1', name: '扩建吧台', desc: '增加每日早晨排队客人的数量上限。', cost: 150, level: 0, maxLevel: 3 },
-  { id: 'u2', name: '奢华装潢', desc: '提升酒馆声望，吸引更富裕和高稀有度的客人。', cost: 300, level: 0, maxLevel: 5 },
-  { id: 'u3', name: '地下隔音', desc: '降低深夜行动被发现的警戒度惩罚。', cost: 500, level: 0, maxLevel: 3 },
+  // Reception
+  { id: 'u1', name: '吧台扩建', desc: '增加每日早晨排队客人的数量上限。', cost: 150, level: 0, maxLevel: 3, category: 'reception', tierReq: 1 },
+  { id: 'u2', name: '驻唱舞台', desc: '每天自动增加声望，吸引更富裕的客人。', cost: 500, level: 0, maxLevel: 3, category: 'reception', tierReq: 2, prerequisiteId: 'u1' },
+  { id: 'u3', name: '豪华卡座', desc: '延长客人的居住天数上限。', cost: 1200, level: 0, maxLevel: 3, category: 'reception', tierReq: 3, prerequisiteId: 'u2' },
+  // Dungeon
+  { id: 'u4', name: '隔音墙壁', desc: '降低深夜行动被发现的警戒度惩罚。', cost: 300, level: 0, maxLevel: 3, category: 'dungeon', tierReq: 1 },
+  { id: 'u5', name: '专业刑具', desc: '提升调教时经验值和服从度的获取效率。', cost: 800, level: 0, maxLevel: 3, category: 'dungeon', tierReq: 2, prerequisiteId: 'u4' },
+  { id: 'u6', name: '医疗恢复舱', desc: '调教时造成的健康值损耗大幅降低。', cost: 2000, level: 0, maxLevel: 3, category: 'dungeon', tierReq: 3, prerequisiteId: 'u5' },
+  // Security
+  { id: 'u7', name: '隐蔽暗哨', desc: '增加酒馆武力，提升武力压制的成功率。', cost: 400, level: 0, maxLevel: 3, category: 'security', tierReq: 1 },
+  { id: 'u8', name: '地下密道', desc: '每天结算时自动降低酒馆的大警戒度。', cost: 1000, level: 0, maxLevel: 3, category: 'security', tierReq: 2, prerequisiteId: 'u7' },
 ];
 
 const INITIAL_RESEARCHES: ResearchItem[] = [
-  { id: 'r1', name: '烈性调酒', desc: '在酒精中掺入特制配方，使酒精诱惑额外造成10点抵抗削减。', cost: 300, isUnlocked: false },
-  { id: 'r2', name: '高级媚药', desc: '大幅提升资产的初始魅力，增加服务费收入。', cost: 450, isUnlocked: false },
-  { id: 'r3', name: '强效吐真剂', desc: '在盘问时更容易获取隐藏情报，并且客人会停留更久。', cost: 250, isUnlocked: false },
+  // Alchemy
+  { id: 'r1', name: '烈性调酒', desc: '使酒精诱惑额外造成 10 点抵抗削减。', cost: 300, isUnlocked: false, category: 'alchemy', tierReq: 1 },
+  { id: 'r2', name: '迷幻香薰', desc: '研制成功后，酒馆酒水属性永久增加 15 点。', cost: 800, isUnlocked: false, category: 'alchemy', tierReq: 2, prerequisiteId: 'r1' },
+  { id: 'r3', name: '神经麻痹毒素', desc: '极大幅度降低目标的反制警觉度增长。', cost: 1500, isUnlocked: false, category: 'alchemy', tierReq: 3, prerequisiteId: 'r2' },
+  // Mind
+  { id: 'r4', name: '强效吐真剂', desc: '在盘问时更容易获取隐藏情报。', cost: 250, isUnlocked: false, category: 'mind', tierReq: 1 },
+  { id: 'r5', name: '深度催眠', desc: '酒馆魅力属性永久增加 15 点。', cost: 700, isUnlocked: false, category: 'mind', tierReq: 2, prerequisiteId: 'r4' },
+  { id: 'r6', name: '精神烙印', desc: '每次调教后额外获得大量服从度。', cost: 1800, isUnlocked: false, category: 'mind', tierReq: 3, prerequisiteId: 'r5' },
+  // Body
+  { id: 'r7', name: '初级媚药', desc: '提升新捕获资产的初始魅力。', cost: 400, isUnlocked: false, category: 'body', tierReq: 1 },
+  { id: 'r8', name: '敏感体质改造', desc: '每次调教额外获得 50% 经验值加成。', cost: 1000, isUnlocked: false, category: 'body', tierReq: 2, prerequisiteId: 'r7' },
+  { id: 'r9', name: '永动机关', desc: '资产每晚提供服务后自动恢复部分健康值。', cost: 2500, isUnlocked: false, category: 'body', tierReq: 3, prerequisiteId: 'r8' },
 ];
 
 const INITIAL_SHOP_ITEMS: ShopItem[] = [
@@ -107,6 +126,7 @@ export const useGameStore = create<GameState>()(
       day: 1,
       timePhase: 'Morning',
       resources: { ...INITIAL_RESOURCES },
+      tavernTier: 1,
       logs: [{ id: 'init', timestamp: new Date().toLocaleTimeString(), message: '游戏开始。', type: 'info' }],
       inventory: [],
       upgrades: JSON.parse(JSON.stringify(INITIAL_UPGRADES)),
@@ -658,6 +678,7 @@ if (timePhase === 'LateNight') {
           day: 1,
           timePhase: 'Morning',
           resources: { ...INITIAL_RESOURCES },
+          tavernTier: 1,
           logs: [
             { id: 'init1', timestamp: new Date().toLocaleTimeString(), message: '新的经营开始了。', type: 'info' },
             { id: 'init2', timestamp: new Date().toLocaleTimeString(), message: `【初始资产】你带来了一名名叫 [${initialAsset.name}] 的普通女奴。`, type: 'success' }
@@ -698,6 +719,36 @@ if (timePhase === 'LateNight') {
 
       backToMenu: () => {
         set({ gameState: 'menu' });
+      },
+
+      upgradeTavernTier: () => {
+        const { tavernTier, resources, addLog } = get();
+        if (tavernTier >= 5) return;
+
+        const upgradeCosts = {
+          1: { gold: 1000, rep: 100 },
+          2: { gold: 3000, rep: 300 },
+          3: { gold: 8000, rep: 600 },
+          4: { gold: 20000, rep: 1000 },
+        };
+
+        const cost = upgradeCosts[tavernTier as 1|2|3|4];
+        if (resources.gold >= cost.gold && resources.reputation >= cost.rep) {
+          const nextTier = (tavernTier + 1) as TavernTier;
+          set(state => ({
+            tavernTier: nextTier,
+            resources: {
+              ...state.resources,
+              gold: state.resources.gold - cost.gold,
+              maxAp: state.resources.maxAp + 1,
+              ap: state.resources.maxAp + 1,
+              force: state.resources.force + 15,
+              charm: state.resources.charm + 15,
+              alcohol: state.resources.alcohol + 15
+            }
+          }));
+          addLog(`【酒馆升阶】花费了 ${cost.gold} 金币，酒馆晋升为 ${nextTier} 阶！获得了全方位属性提升，并解锁了更高级的设施和科技树。`, 'success');
+        }
       },
 
       resetGame: () => {

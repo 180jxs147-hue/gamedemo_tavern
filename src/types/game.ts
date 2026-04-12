@@ -114,13 +114,18 @@ export interface FemaleGuest extends BaseGuest {
 export type Guest = MaleGuest | FemaleGuest;
 
 
+export type TavernTier = 1 | 2 | 3 | 4 | 5;
+
 export interface TavernUpgrade {
   id: string;
   name: string;
   desc: string;
-  cost: number;
+  cost: number; // Materials / Gold
   level: number;
   maxLevel: number;
+  category: 'reception' | 'dungeon' | 'security';
+  tierReq: TavernTier; // Required Tavern Tier
+  prerequisiteId?: string; // ID of the required upgrade
 }
 
 export interface ResearchItem {
@@ -129,6 +134,9 @@ export interface ResearchItem {
   desc: string;
   cost: number; // AP or Gold
   isUnlocked: boolean;
+  category: 'alchemy' | 'mind' | 'body';
+  tierReq: TavernTier;
+  prerequisiteId?: string;
 }
 
 export interface ShopItem {
