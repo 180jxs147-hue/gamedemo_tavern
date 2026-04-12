@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
-import { Shield, Brain, HeartPulse, Crosshair, X, User, PackageOpen, AlertTriangle } from 'lucide-react';
+import { Shield, Brain, HeartPulse, Crosshair, X, User, PackageOpen, AlertTriangle, Beer } from 'lucide-react';
 import { FemaleGuest } from '../types/game';
 import { useShallow } from 'zustand/react/shallow';
 import { getRarityColor } from '../utils/ui';
@@ -222,21 +222,21 @@ export const CaptureEncounterView: React.FC = () => {
                 disabled={resources.ap < 1 || hpPercentage === 0}
                 className="w-full py-3 bg-red-950/20 hover:bg-red-950/40 border border-red-900/30 text-red-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-50 font-bold"
               >
-                <Shield className="w-4 h-4 mr-2" /> 武力压制 (-1 AP)
+                <Shield className="w-4 h-4 mr-2" /> 武力压制 [武力:{resources.force}] (-1 AP)
               </button>
               <button
                 onClick={() => executeCaptureAction('seduce')}
                 disabled={resources.ap < 1 || hpPercentage === 0}
                 className="w-full py-3 bg-pink-950/20 hover:bg-pink-950/40 border border-pink-900/30 text-pink-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-50 font-bold"
               >
-                <Brain className="w-4 h-4 mr-2" /> 言语魅惑 (-1 AP)
+                <Brain className="w-4 h-4 mr-2" /> 言语魅惑 [魅力:{resources.charm}] (-1 AP)
               </button>
               <button
                 onClick={() => executeCaptureAction('drug')}
                 disabled={resources.ap < 1 || hpPercentage === 0}
-                className="w-full py-3 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-900/30 text-purple-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-50 font-bold"
+                className="w-full py-3 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-900/30 text-amber-400 rounded-sm flex items-center justify-center transition-colors disabled:opacity-50 font-bold"
               >
-                <HeartPulse className="w-4 h-4 mr-2" /> 炼金下药 (-1 AP)
+                <Beer className="w-4 h-4 mr-2" /> 酒精诱惑 [酒水:{resources.alcohol}] (-1 AP)
               </button>
             </div>
           </div>

@@ -65,7 +65,10 @@ const INITIAL_RESOURCES: GameResources = {
   gold: 100,
   materials: 0,
   reputation: 10,
-  alertLevel: 0
+  alertLevel: 0,
+  force: 15,
+  charm: 15,
+  alcohol: 15
 };
 
 const getNextPhase = (current: TimePhase): TimePhase => {
@@ -84,7 +87,7 @@ const INITIAL_UPGRADES: TavernUpgrade[] = [
 ];
 
 const INITIAL_RESEARCHES: ResearchItem[] = [
-  { id: 'r1', name: '神经毒素', desc: '使目标虚弱，大幅降低所有诱捕判定的难度(DC-3)。', cost: 300, isUnlocked: false },
+  { id: 'r1', name: '烈性调酒', desc: '在酒精中掺入特制配方，使酒精诱惑额外造成10点抵抗削减。', cost: 300, isUnlocked: false },
   { id: 'r2', name: '高级媚药', desc: '大幅提升资产的初始魅力，增加服务费收入。', cost: 450, isUnlocked: false },
   { id: 'r3', name: '强效吐真剂', desc: '在盘问时更容易获取隐藏情报，并且客人会停留更久。', cost: 250, isUnlocked: false },
 ];
@@ -374,7 +377,12 @@ if (timePhase === 'LateNight') {
         if (multiplier === 0.5) effectiveText = "收效甚微... 目标对此有很强的抗性。";
 
         const hasToxin = researches.find(r => r.id === 'r1')?.isUnlocked;
-        const baseDmg = Math.floor(Math.random() * 11) + 10; // 10-20 base dmg
+        let statVal = 10;
+        if (type === 'force') statVal = resources.force;
+        else if (type === 'seduce') statVal = resources.charm;
+        else if (type === 'drug') statVal = resources.alcohol;
+
+        const baseDmg = statVal + Math.floor(Math.random() * 11); // stat + 0~10
         let finalDmg = Math.floor(baseDmg * multiplier);
         if (type === 'drug' && hasToxin) finalDmg += 10;
 
@@ -384,7 +392,7 @@ if (timePhase === 'LateNight') {
         const awarenessGain = Math.floor(target.alertness / 2) + Math.floor(Math.random() * 10);
         const newAwareness = target.awareness + awarenessGain;
         
-        const typeName = type === 'force' ? '武力压制' : type === 'seduce' ? '言语魅惑' : '炼金下药';
+        const typeName = type === 'force' ? '武力压制' : type === 'seduce' ? '言语魅惑' : '酒精诱惑';
 
         const actionLog = `使用了【${typeName}】，造成了 ${finalDmg} 点抵抗削减。${effectiveText}`;
         const reactionLog = `【警觉】目标的警觉度上升了 ${awarenessGain} 点！`;

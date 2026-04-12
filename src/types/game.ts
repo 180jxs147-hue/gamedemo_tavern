@@ -46,6 +46,9 @@ export interface GameResources {
   materials: number;
   reputation: number;
   alertLevel: number;
+  force: number;   // 酒馆武力（影响武力压制）
+  charm: number;   // 酒馆魅力（影响言语魅惑）
+  alcohol: number; // 酒馆酒水（影响酒精诱惑）
 }
 
 export interface BaseGuest {

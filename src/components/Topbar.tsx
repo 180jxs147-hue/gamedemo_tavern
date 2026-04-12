@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Coins, Zap, ShieldAlert, Star, Package, Clock, Sun, Moon, MoonStar, LogOut } from 'lucide-react';
+import { Coins, Zap, ShieldAlert, Star, Package, Clock, Sun, Moon, MoonStar, LogOut, Sword, Heart, Beer } from 'lucide-react';
 import { TimePhase } from '../types/game';
 import { clsx } from 'clsx';
 import { useShallow } from 'zustand/react/shallow';
@@ -53,6 +53,11 @@ export const Topbar: React.FC = () => {
         <ResourceBadge icon={<Coins className="w-4 h-4 text-[color:var(--rt-accent)]" />} value={resources.gold} label="金币" />
         <ResourceBadge icon={<Package className="w-4 h-4 text-[color:var(--rt-muted)]" />} value={resources.materials} label="建材" />
         <ResourceBadge icon={<Star className="w-4 h-4 text-[#a57b3c]" />} value={resources.reputation} label="声望" />
+
+        <div className="w-px h-5 bg-[color:var(--rt-border)] mx-2" />
+        <ResourceBadge icon={<Sword className="w-4 h-4 text-red-500" />} value={resources.force} label="酒馆武力" />
+        <ResourceBadge icon={<Heart className="w-4 h-4 text-pink-400" />} value={resources.charm} label="酒馆魅力" />
+        <ResourceBadge icon={<Beer className="w-4 h-4 text-amber-500" />} value={resources.alcohol} label="酒水烈度" />
         
         <div className="flex items-center space-x-2 bg-[color:var(--rt-surface-2)] border border-[color:var(--rt-border)] px-3 py-1.5 rounded-sm text-sm ml-4">
           <ShieldAlert className={clsx("w-4 h-4", resources.alertLevel > 50 ? "text-[color:var(--rt-danger)] animate-pulse" : "text-[#6b3a25]")} />
