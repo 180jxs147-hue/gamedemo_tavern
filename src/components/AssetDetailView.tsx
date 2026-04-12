@@ -130,7 +130,7 @@ export const AssetDetailView: React.FC<{ onBack?: () => void }> = ({ onBack }) =
         </div>
 
         {/* Right: Training & Logs */}
-        <div className="flex-1 flex flex-col bg-[#161211]/90 backdrop-blur overflow-hidden">
+        <div className="flex-1 flex flex-col bg-[#161211]/90 backdrop-blur overflow-hidden relative">
           <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
             
             {/* Skills */}
@@ -160,7 +160,7 @@ export const AssetDetailView: React.FC<{ onBack?: () => void }> = ({ onBack }) =
             </div>
 
             {/* Training Logs */}
-            <div className="bg-[#1d1715]/80 border border-[#3e2e25] p-4 rounded-sm flex-1 flex flex-col min-h-[200px]">
+            <div className="bg-[#1d1715]/80 border border-[#3e2e25] p-4 rounded-sm flex-1 flex flex-col min-h-[150px]">
               <h4 className="text-[#e6b36e] font-bold mb-4 flex items-center text-sm border-b border-[#3e2e25] pb-2 shrink-0">
                 调教记录
               </h4>
