@@ -47,6 +47,8 @@ interface GameState {
   attemptCapture: () => void;
 
   useItemInEncounter: (itemId: string) => void;
+  isDungeonOpen: boolean;
+  setDungeonOpen: (isOpen: boolean) => void;
   // 交互选择状态
   selectedEntity: { type: 'guest' | 'asset'; id: string } | null;
   setSelectedEntity: (entity: { type: 'guest' | 'asset'; id: string } | null) => void;
@@ -140,6 +142,8 @@ export const useGameStore = create<GameState>()(
       selectedEntity: null,
       activeEncounterId: null,
       encounterLogs: [],
+      isDungeonOpen: false,
+      setDungeonOpen: (isOpen) => set({ isDungeonOpen: isOpen }),
 
       addLog: (message, type = 'info') => set(state => ({
         logs: [...state.logs, {
